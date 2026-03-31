@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BorrowBox Admin - Students</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#3211d4",
+            "background-light": "#f6f6f8",
+            "background-dark": "#131022",
+          },
+          fontFamily: {
+            display: ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
+  <div class="relative flex min-h-screen w-full flex-col">
+    <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 text-primary">
+          <span class="material-symbols-outlined text-3xl font-bold">package_2</span>
+          <h2 class="text-xl font-bold tracking-tight">BorrowBox</h2>
+        </div>
+        <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+        <h1 class="text-sm font-semibold text-slate-600 dark:text-slate-400">Student Management</h1>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden md:flex relative group">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+          <input class="h-10 w-64 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 pl-10 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Search students..." type="text" />
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative" type="button">
+            <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">notifications</span>
+            <span class="absolute top-2.5 right-2.5 flex h-2 w-2 rounded-full bg-red-500 border-2 border-white dark:border-background-dark"></span>
+          </button>
+          <button id="themeToggle" class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <span id="themeIcon" class="material-symbols-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-slate-800">
+          <div class="flex flex-col items-end text-xs">
+            <span class="font-bold">Admin User</span>
+            <span class="text-slate-500">Super Administrator</span>
+          </div>
+          <div class="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
+            <img alt="Profile Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIG97uiB-KPT0CIAR7tAC2fn4l-3otj17WwIbaOOV73jcBj5nDr2udWutND-SAvMZnKftSuwm2j8hDm6Xol6YA-55lfCJELDkWAAuTcvRbDbxQJ-pmay1WqFI8pIApjE0wzKZ8jV3EJSscN4u5Y_uWTmTA_pKbS43S-T_4f7u9Y-S8FQzak5R3ulvJAn6xeIddB3GECIFek25V2y-zDCJFEvkWYlvPBPx7F0MqPk6gUSy6ozRi2YRzCx-SZZze4OMvEw2YmejNGdQ" />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <aside id="appSidebar" class="hidden lg:flex w-80 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4 overflow-y-auto transition-all duration-300">
+
+
+      <nav class="space-y-1">
+  <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">General</p>
+
+  <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white font-medium" href="admindashboard.html">
+    <span class="material-symbols-outlined text-xl">grid_view</span>
+    <span class="text-sm">Dashboard</span>
+  </a>
+
+  <div class="pt-4 pb-2">
+    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Management</p>
+
+    <button
+      class="menu-toggle w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      type="button"
+      data-target="userManagementMenu"
+      aria-expanded="true"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span class="text-sm">User Management</span>
+      </div>
+      <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+    </button>
+
+    <div id="userManagementMenu" class="ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary text-sm font-medium" href="students.html">
+        <span class="material-symbols-outlined text-lg">school</span>
+        <span>Students</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="employees.html">
+        <span class="material-symbols-outlined text-lg">badge</span>
+        <span>Employees</span>
+      </a>
+    </div>
+
+    <button
+      class="menu-toggle mt-1 w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      type="button"
+      data-target="inventoryMenu"
+      aria-expanded="false"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-xl">inventory_2</span>
+        <span class="text-sm">Inventory</span>
+      </div>
+      <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+    </button>
+
+    <div id="inventoryMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="itemmasterfile.html">
+        <span class="material-symbols-outlined text-lg">inventory</span>
+        <span>Item Masterfile</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="itemmanagement.html">
+        <span class="material-symbols-outlined text-lg">edit_note</span>
+        <span>Item Management</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="incomingitems.html">
+        <span class="material-symbols-outlined text-lg">south_west</span>
+        <span>Incoming Items</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="outgoingitems.html">
+        <span class="material-symbols-outlined text-lg">north_east</span>
+        <span>Outgoing Items</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="stockreport.html">
+        <span class="material-symbols-outlined text-lg">assessment</span>
+        <span>Stock Report</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="pt-4 pb-2">
+    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Operations</p>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowingrequests.html">
+      <span class="material-symbols-outlined text-xl">handshake</span>
+      <span class="text-sm">Borrowing Requests</span>
+      <span class="ml-auto bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold">12</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="returns.html">
+      <span class="material-symbols-outlined text-xl">assignment_return</span>
+      <span class="text-sm">Returns</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowinghistory.html">
+      <span class="material-symbols-outlined text-xl">history</span>
+      <span class="text-sm">Borrowing History</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-red-500 transition-colors" href="overdueitems.html">
+      <span class="material-symbols-outlined text-xl">error_outline</span>
+      <span class="text-sm font-medium">Overdue Items</span>
+      <span class="ml-auto bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
+    </a>
+  </div>
+
+  <div class="pt-4 pb-2">
+    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Systems Admin</p>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="reports.html">
+      <span class="material-symbols-outlined text-xl">analytics</span>
+      <span class="text-sm">Reports</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="rolemanagement.html">
+      <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+      <span class="text-sm">Role Management</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowingpolicies.html">
+      <span class="material-symbols-outlined text-xl">policy</span>
+      <span class="text-sm">Borrowing Policies</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="auditlogs.html">
+      <span class="material-symbols-outlined text-xl">receipt_long</span>
+      <span class="text-sm">Audit Logs</span>
+    </a>
+
+    <button
+      class="menu-toggle mt-1 w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      type="button"
+      data-target="systemSetupMenu"
+      aria-expanded="false"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span class="text-sm">System Setup</span>
+      </div>
+      <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+    </button>
+
+    <div id="systemSetupMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="coursemanagement.html">
+        <span class="material-symbols-outlined text-lg">account_tree</span>
+        <span>Academic Structure</span>
+      </a>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="employeesetup.html">
+        <span class="material-symbols-outlined text-lg">business_center</span>
+        <span>Employee Structure</span>
+      </a>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="systemconfig.html">
+        <span class="material-symbols-outlined text-lg">tune</span>
+        <span>System Configuration</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+        <div class="mt-auto space-y-3 pt-4">
+          <a href="signin.html" class="flex items-center justify-center gap-2 w-full rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-100 transition-colors dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"><span class="material-symbols-outlined text-lg">logout</span><span>Sign Out</span></a>
+          <div class="p-4 bg-primary/5 rounded-xl border border-primary/10"><p class="text-xs font-semibold text-primary mb-1">Academic Year 25/26</p><p class="text-[10px] text-slate-500 leading-tight">Server status: Operational<br />Last backup: 2h ago</p></div>
+        </div>
+      </aside>
+
+
+      <button
+  id="sidebarToggleDesktop"
+  type="button"
+  class="hidden lg:flex fixed top-[88px] left-[304px] z-50 h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 shadow-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300"
+  title="Toggle Sidebar"
+  aria-label="Toggle Sidebar"
+>
+  <span id="sidebarToggleIcon" class="material-symbols-outlined text-[20px]">left_panel_close</span>
+</button>
+
+      <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+          <div class="relative w-full xl:max-w-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+            <input class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" placeholder="Search by name or student number..." type="text" />
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="openAddStudentModal" type="button" class="bg-primary hover:bg-primary/90 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-lg">person_add</span><span>Add Student</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-black tracking-tight">Students Directory</h2>
+            <p class="text-slate-500 text-sm mt-1">Manage all registered students and their borrowing access permissions.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <select class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"><option>All Colleges</option><option>College of Computer Studies</option><option>College of Business Administration</option><option>College of Engineering</option></select>
+            <select class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"><option>All Departments</option><option>Information Technology Department</option><option>Information Systems Department</option><option>Computer Science Department</option><option>Business Administration Department</option><option>Engineering Department</option></select>
+            <select class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"><option>All Genders</option><option>Male</option><option>Female</option></select>
+            <button class="flex items-center gap-2 px-3 py-2 text-primary bg-primary/10 rounded-lg text-sm font-medium hover:bg-primary/20"><span class="material-symbols-outlined text-lg">filter_list</span><span>Reset Filters</span></button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm"><p class="text-sm text-slate-500">Total Students</p><p class="mt-2 text-3xl font-black">20</p></div>
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm"><p class="text-sm text-slate-500">Active Students</p><p class="mt-2 text-3xl font-black">18</p></div>
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm"><p class="text-sm text-slate-500">With Active Borrowings</p><p class="mt-2 text-3xl font-black">7</p></div>
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm"><p class="text-sm text-slate-500">Overdue Students</p><p class="mt-2 text-3xl font-black text-red-600">3</p></div>
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm"><p class="text-sm text-slate-500">Most Active Course</p><p class="mt-2 text-xl font-black">BS Information Technology</p><p class="text-xs text-slate-500 mt-1">8 students</p></div>
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm"><p class="text-sm text-slate-500">Most Active College</p><p class="mt-2 text-xl font-black">College of Computer Studies</p><p class="text-xs text-slate-500 mt-1">12 students</p></div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+                  <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Student Info</th>
+                  <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Academic Info</th>
+                  <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Contact</th>
+                  <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Gender</th>
+                  <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <!-- 10 visible rows -->
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0001 - Juan Dela Cruz</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Information Technology</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>juan.delacruz@borrowbox.edu</div><div class="text-xs text-slate-500">0917-123-4567</div></td><td class="px-6 py-4">Male</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0001" data-first-name="Juan" data-last-name="Dela Cruz" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="juan.delacruz@borrowbox.edu" data-phone="0917-123-4567" data-street-address="" data-student-full-name="Juan Dela Cruz" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0001" data-first-name="Juan" data-last-name="Dela Cruz" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="juan.delacruz@borrowbox.edu" data-phone="0917-123-4567" data-street-address="" data-student-full-name="Juan Dela Cruz" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0001" data-student-full-name="Juan Dela Cruz"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0002 - Maria Santos</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Information Systems</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>maria.santos@borrowbox.edu</div><div class="text-xs text-slate-500">0918-222-3344</div></td><td class="px-6 py-4">Female</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0002" data-first-name="Maria" data-last-name="Santos" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Systems" data-email="maria.santos@borrowbox.edu" data-phone="0918-222-3344" data-street-address="" data-student-full-name="Maria Santos" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0002" data-first-name="Maria" data-last-name="Santos" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Systems" data-email="maria.santos@borrowbox.edu" data-phone="0918-222-3344" data-street-address="" data-student-full-name="Maria Santos" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0002" data-student-full-name="Maria Santos"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0003 - Carlo Reyes</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Computer Science</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>carlo.reyes@borrowbox.edu</div><div class="text-xs text-slate-500">0919-555-1010</div></td><td class="px-6 py-4">Male</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0003" data-first-name="Carlo" data-last-name="Reyes" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Computer Science" data-email="carlo.reyes@borrowbox.edu" data-phone="0919-555-1010" data-street-address="" data-student-full-name="Carlo Reyes" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0003" data-first-name="Carlo" data-last-name="Reyes" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Computer Science" data-email="carlo.reyes@borrowbox.edu" data-phone="0919-555-1010" data-street-address="" data-student-full-name="Carlo Reyes" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0003" data-student-full-name="Carlo Reyes"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0004 - Angela Lopez</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Information Technology</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>angela.lopez@borrowbox.edu</div><div class="text-xs text-slate-500">0920-333-4444</div></td><td class="px-6 py-4">Female</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0004" data-first-name="Angela" data-last-name="Lopez" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="angela.lopez@borrowbox.edu" data-phone="0920-333-4444" data-street-address="" data-student-full-name="Angela Lopez" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0004" data-first-name="Angela" data-last-name="Lopez" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="angela.lopez@borrowbox.edu" data-phone="0920-333-4444" data-street-address="" data-student-full-name="Angela Lopez" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0004" data-student-full-name="Angela Lopez"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0005 - Nicole Mendoza</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Business Administration</div><div class="text-xs text-slate-500">College of Business Administration</div></td><td class="px-6 py-4"><div>nicole.mendoza@borrowbox.edu</div><div class="text-xs text-slate-500">0921-888-7777</div></td><td class="px-6 py-4">Female</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0005" data-first-name="Nicole" data-last-name="Mendoza" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Business Administration" data-department="" data-course="BS Business Administration" data-email="nicole.mendoza@borrowbox.edu" data-phone="0921-888-7777" data-street-address="" data-student-full-name="Nicole Mendoza" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0005" data-first-name="Nicole" data-last-name="Mendoza" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Business Administration" data-department="" data-course="BS Business Administration" data-email="nicole.mendoza@borrowbox.edu" data-phone="0921-888-7777" data-street-address="" data-student-full-name="Nicole Mendoza" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0005" data-student-full-name="Nicole Mendoza"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0006 - Mark Villanueva</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Business Administration</div><div class="text-xs text-slate-500">College of Business Administration</div></td><td class="px-6 py-4"><div>mark.villanueva@borrowbox.edu</div><div class="text-xs text-slate-500">0922-111-2233</div></td><td class="px-6 py-4">Male</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0006" data-first-name="Mark" data-last-name="Villanueva" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Business Administration" data-department="" data-course="BS Business Administration" data-email="mark.villanueva@borrowbox.edu" data-phone="0922-111-2233" data-street-address="" data-student-full-name="Mark Villanueva" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0006" data-first-name="Mark" data-last-name="Villanueva" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Business Administration" data-department="" data-course="BS Business Administration" data-email="mark.villanueva@borrowbox.edu" data-phone="0922-111-2233" data-street-address="" data-student-full-name="Mark Villanueva" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0006" data-student-full-name="Mark Villanueva"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0007 - Patricia Gomez</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Information Technology</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>patricia.gomez@borrowbox.edu</div><div class="text-xs text-slate-500">0923-456-7890</div></td><td class="px-6 py-4">Female</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0007" data-first-name="Patricia" data-last-name="Gomez" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="patricia.gomez@borrowbox.edu" data-phone="0923-456-7890" data-street-address="" data-student-full-name="Patricia Gomez" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0007" data-first-name="Patricia" data-last-name="Gomez" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="patricia.gomez@borrowbox.edu" data-phone="0923-456-7890" data-street-address="" data-student-full-name="Patricia Gomez" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0007" data-student-full-name="Patricia Gomez"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0008 - Daniel Flores</div><div class="text-xs text-slate-500">Role: Student • Status: Inactive</div></td><td class="px-6 py-4"><div class="font-medium">BS Computer Science</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>daniel.flores@borrowbox.edu</div><div class="text-xs text-slate-500">0924-111-6688</div></td><td class="px-6 py-4">Male</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0008" data-first-name="Daniel" data-last-name="Flores" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Computer Science" data-email="daniel.flores@borrowbox.edu" data-phone="0924-111-6688" data-street-address="" data-student-full-name="Daniel Flores" data-status="Inactive" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0008" data-first-name="Daniel" data-last-name="Flores" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Computer Science" data-email="daniel.flores@borrowbox.edu" data-phone="0924-111-6688" data-street-address="" data-student-full-name="Daniel Flores" data-status="Inactive" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0008" data-student-full-name="Daniel Flores"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0009 - Sophia Cruz</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Information Technology</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>sophia.cruz@borrowbox.edu</div><div class="text-xs text-slate-500">0925-781-9001</div></td><td class="px-6 py-4">Female</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0009" data-first-name="Sophia" data-last-name="Cruz" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="sophia.cruz@borrowbox.edu" data-phone="0925-781-9001" data-street-address="" data-student-full-name="Sophia Cruz" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0009" data-first-name="Sophia" data-last-name="Cruz" data-middle-initial="" data-birthdate="" data-gender="Female" data-college="College of Computer Studies" data-department="" data-course="BS Information Technology" data-email="sophia.cruz@borrowbox.edu" data-phone="0925-781-9001" data-street-address="" data-student-full-name="Sophia Cruz" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0009" data-student-full-name="Sophia Cruz"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4"><div class="font-semibold">2025-0010 - Kevin Bautista</div><div class="text-xs text-slate-500">Role: Student • Status: Active</div></td><td class="px-6 py-4"><div class="font-medium">BS Information Systems</div><div class="text-xs text-slate-500">College of Computer Studies</div></td><td class="px-6 py-4"><div>kevin.bautista@borrowbox.edu</div><div class="text-xs text-slate-500">0926-665-4321</div></td><td class="px-6 py-4">Male</td><td class="px-6 py-4"><div class="flex items-center justify-center gap-2"><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0010" data-first-name="Kevin" data-last-name="Bautista" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Information Systems" data-email="kevin.bautista@borrowbox.edu" data-phone="0926-665-4321" data-street-address="" data-student-full-name="Kevin Bautista" data-status="Active" data-mode="view"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center" data-student-number="2025-0010" data-first-name="Kevin" data-last-name="Bautista" data-middle-initial="" data-birthdate="" data-gender="Male" data-college="College of Computer Studies" data-department="" data-course="BS Information Systems" data-email="kevin.bautista@borrowbox.edu" data-phone="0926-665-4321" data-street-address="" data-student-full-name="Kevin Bautista" data-status="Active" data-mode="edit"><span class="material-symbols-outlined text-[18px]">edit</span></button><button type="button" class="student-action-btn h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-red-500 hover:border-red-300 transition-colors flex items-center justify-center" data-mode="delete" data-student-number="2025-0010" data-student-full-name="Kevin Bautista"><span class="material-symbols-outlined text-[18px]">delete</span></button><button type="button" class="h-9 w-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-primary hover:border-primary/30 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">print</span></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-sm text-slate-500">Showing <span class="font-semibold">10</span> of <span class="font-semibold">20</span> students</p>
+            <div class="flex items-center gap-2">
+              <button class="p-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-400 opacity-50 cursor-not-allowed" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+              <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-sm">1</button>
+              <button class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800">2</button>
+              <button class="p-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"><span class="material-symbols-outlined">chevron_right</span></button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  
+  <!-- STUDENT MODAL -->
+  <div id="studentModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="w-full max-w-6xl max-h-[95vh] overflow-y-auto rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1730] shadow-2xl">
+      <div class="flex items-start justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-5">
+        <div>
+          <h3 id="studentModalTitle" class="text-2xl font-extrabold tracking-tight">Add Student</h3>
+          <p id="studentModalSubtitle" class="mt-1 text-sm text-slate-500 dark:text-slate-400">Fill in the student information below.</p>
+        </div>
+        <button id="closeStudentModal" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div id="studentFormWrapper" class="px-6 py-6">
+        <form id="studentForm" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Student Number <span class="text-red-500">*</span></label>
+            <input id="studentNumber" type="text" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Last Name <span class="text-red-500">*</span></label>
+            <input id="lastName" type="text" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">First Name <span class="text-red-500">*</span></label>
+            <input id="firstName" type="text" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Middle Initial</label>
+            <input id="middleInitial" type="text" maxlength="1" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Birthdate</label>
+            <input id="birthdate" type="date" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Gender <span class="text-red-500">*</span></label>
+            <select id="gender" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary">
+              <option value="">Select gender</option>
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">College <span class="text-red-500">*</span></label>
+            <select id="college" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary">
+              <option value="">Select college</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Department <span class="text-red-500">*</span></label>
+            <select id="department" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary">
+              <option value="">Select department</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Course <span class="text-red-500">*</span></label>
+            <select id="course" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary">
+              <option value="">Select course</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Email</label>
+            <input id="email" type="email" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Phone</label>
+            <input id="phone" type="text" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Photo</label>
+            <input id="photo" type="file" accept="image/*" class="block w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-3 py-2.5 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-slate-200 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-800 hover:file:bg-slate-300 dark:file:bg-slate-700 dark:file:text-slate-100" />
+            <p class="mt-2 text-[11px] text-slate-500">Placeholder only. Connect later to your database or cloud storage.</p>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Region <span class="text-red-500">*</span></label>
+            <select id="region" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary"><option value="">Loading regions...</option></select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Province</label>
+            <select id="province" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary"><option value="">Select region first</option></select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">City / Municipality <span class="text-red-500">*</span></label>
+            <select id="cityMunicipality" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary"><option value="">Select region or province first</option></select>
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold">Barangay <span class="text-red-500">*</span></label>
+            <select id="barangay" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary"><option value="">Select city/municipality first</option></select>
+          </div>
+          <div class="md:col-span-2 xl:col-span-2">
+            <label class="mb-2 block text-sm font-semibold">Street Address</label>
+            <input id="streetAddress" type="text" class="w-full rounded-2xl border border-slate-200 dark:border-[#27406a] bg-white dark:bg-[#061126] px-4 py-3 text-sm focus:border-primary focus:ring-primary" />
+          </div>
+          <div class="xl:col-span-1">
+            <label class="mb-2 block text-sm font-semibold">Photo Preview</label>
+            <div class="flex h-[116px] items-center justify-center rounded-2xl border border-dashed border-slate-300 dark:border-[#27406a] bg-slate-50 dark:bg-[#061126]">
+              <img id="photoPreview" src="" alt="Photo preview" class="hidden h-full w-full rounded-2xl object-cover" />
+              <div id="photoPlaceholder" class="text-center text-slate-500">
+                <span class="material-symbols-outlined text-3xl">image</span>
+                <p class="mt-1 text-xs">No photo selected yet</p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="deleteWrapper" class="hidden px-6 py-6">
+        <div class="rounded-3xl border border-red-200 bg-red-50 dark:border-red-900/40 dark:bg-red-950/20 p-6">
+          <div class="flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/15 text-red-500 dark:text-red-400">
+              <span class="material-symbols-outlined">warning</span>
+            </div>
+            <div>
+              <h4 class="text-lg font-bold text-red-600 dark:text-red-300">Confirm Delete</h4>
+              <p class="mt-1 text-sm text-slate-700 dark:text-slate-300">You are about to delete <span id="deleteStudentName" class="font-bold"></span>.</p>
+              <p class="mt-2 text-xs text-slate-500">This is front-end only for now. Connect this action to your API later.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-800 px-6 py-5">
+        <div id="psgcStatus" class="text-xs text-slate-500">Address fields use PSGC-powered loading.</div>
+        <div class="flex items-center gap-3">
+          <button id="cancelStudentModal" type="button" class="rounded-2xl border border-slate-300 dark:border-slate-700 bg-transparent px-5 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
+          <button id="saveStudentBtn" type="button" class="rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary/90">Save Student</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+
+
+  const sidebar = document.getElementById("appSidebar");
+  const sidebarToggleDesktop = document.getElementById("sidebarToggleDesktop");
+  const sidebarToggleIcon = document.getElementById("sidebarToggleIcon");
+
+  if (sidebar && sidebarToggleDesktop && sidebarToggleIcon) {
+    let sidebarHidden = false;
+
+    function updateSidebarState() {
+      if (sidebarHidden) {
+        sidebar.classList.add("!hidden");
+        sidebarToggleDesktop.style.left = "16px";
+        sidebarToggleIcon.textContent = "left_panel_open";
+        sidebarToggleDesktop.title = "Show Sidebar";
+        sidebarToggleDesktop.setAttribute("aria-label", "Show Sidebar");
+      } else {
+        sidebar.classList.remove("!hidden");
+        sidebarToggleDesktop.style.left = "304px";
+        sidebarToggleIcon.textContent = "left_panel_close";
+        sidebarToggleDesktop.title = "Hide Sidebar";
+        sidebarToggleDesktop.setAttribute("aria-label", "Hide Sidebar");
+      }
+    }
+
+    sidebarToggleDesktop.addEventListener("click", () => {
+      sidebarHidden = !sidebarHidden;
+      updateSidebarState();
+    });
+
+    updateSidebarState();
+  }
+
+
+  
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem("borrowbox-theme");
+    if (savedTheme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    function updateThemeIcon() {
+      themeIcon.textContent = root.classList.contains("dark") ? "light_mode" : "dark_mode";
+    }
+    updateThemeIcon();
+    themeToggle.addEventListener("click", () => {
+      root.classList.toggle("dark");
+      localStorage.setItem("borrowbox-theme", root.classList.contains("dark") ? "dark" : "light");
+      updateThemeIcon();
+    });
+
+    document.querySelectorAll(".menu-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId = button.getAttribute("data-target");
+        const target = document.getElementById(targetId);
+        const arrow = button.querySelector(".menu-arrow");
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        if (expanded) {
+          target.classList.add("hidden");
+          button.setAttribute("aria-expanded", "false");
+          if (arrow) arrow.textContent = "expand_more";
+        } else {
+          target.classList.remove("hidden");
+          button.setAttribute("aria-expanded", "true");
+          if (arrow) arrow.textContent = "expand_less";
+        }
+      });
+    });
+
+
+    // STUDENT MODAL LOGIC
+    const academicStructure = {
+      "College of Computer Studies": {
+        "Information Technology Department": ["BS Information Technology"],
+        "Information Systems Department": ["BS Information Systems"],
+        "Computer Science Department": ["BS Computer Science"]
+      },
+      "College of Business Administration": {
+        "Business Administration Department": ["BS Business Administration"]
+      },
+      "College of Engineering": {
+        "Engineering Department": ["BS Civil Engineering", "BS Computer Engineering"]
+      }
+    };
+
+    let regionsData = [];
+    let provincesData = [];
+    let citiesData = [];
+    let barangaysData = [];
+    let currentModalMode = "add";
+
+    const studentModal = document.getElementById("studentModal");
+    const studentModalTitle = document.getElementById("studentModalTitle");
+    const studentModalSubtitle = document.getElementById("studentModalSubtitle");
+    const openAddStudentModal = document.getElementById("openAddStudentModal");
+    const closeStudentModal = document.getElementById("closeStudentModal");
+    const cancelStudentModal = document.getElementById("cancelStudentModal");
+    const saveStudentBtn = document.getElementById("saveStudentBtn");
+    const studentFormWrapper = document.getElementById("studentFormWrapper");
+    const deleteWrapper = document.getElementById("deleteWrapper");
+    const deleteStudentName = document.getElementById("deleteStudentName");
+    const psgcStatus = document.getElementById("psgcStatus");
+
+    const studentNumber = document.getElementById("studentNumber");
+    const lastName = document.getElementById("lastName");
+    const firstName = document.getElementById("firstName");
+    const middleInitial = document.getElementById("middleInitial");
+    const birthdate = document.getElementById("birthdate");
+    const gender = document.getElementById("gender");
+    const college = document.getElementById("college");
+    const department = document.getElementById("department");
+    const course = document.getElementById("course");
+    const email = document.getElementById("email");
+    const phone = document.getElementById("phone");
+    const photo = document.getElementById("photo");
+    const photoPreview = document.getElementById("photoPreview");
+    const photoPlaceholder = document.getElementById("photoPlaceholder");
+    const region = document.getElementById("region");
+    const province = document.getElementById("province");
+    const cityMunicipality = document.getElementById("cityMunicipality");
+    const barangay = document.getElementById("barangay");
+    const streetAddress = document.getElementById("streetAddress");
+
+    function openStudentModal() {
+      studentModal.classList.remove("hidden");
+      studentModal.classList.add("flex");
+      document.body.classList.add("overflow-hidden");
+    }
+    function closeStudentModalFn() {
+      studentModal.classList.add("hidden");
+      studentModal.classList.remove("flex");
+      document.body.classList.remove("overflow-hidden");
+    }
+    function setSelectOptions(selectEl, options, placeholderText, valueKey = "name", codeKey = "code") {
+      selectEl.innerHTML = `<option value="">${placeholderText}</option>`;
+      options.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item[codeKey] || item[valueKey];
+        option.textContent = item[valueKey];
+        selectEl.appendChild(option);
+      });
+    }
+    function populateAcademicColleges() {
+      college.innerHTML = `<option value="">Select college</option>`;
+      Object.keys(academicStructure).forEach(collegeName => {
+        const option = document.createElement("option");
+        option.value = collegeName;
+        option.textContent = collegeName;
+        college.appendChild(option);
+      });
+    }
+    function populateDepartments() {
+      department.innerHTML = `<option value="">Select department</option>`;
+      course.innerHTML = `<option value="">Select course</option>`;
+      if (!college.value || !academicStructure[college.value]) return;
+      Object.keys(academicStructure[college.value]).forEach(deptName => {
+        const option = document.createElement("option");
+        option.value = deptName;
+        option.textContent = deptName;
+        department.appendChild(option);
+      });
+    }
+    function populateCourses() {
+      course.innerHTML = `<option value="">Select course</option>`;
+      if (!college.value || !department.value) return;
+      const courses = academicStructure[college.value]?.[department.value] || [];
+      courses.forEach(courseName => {
+        const option = document.createElement("option");
+        option.value = courseName;
+        option.textContent = courseName;
+        course.appendChild(option);
+      });
+    }
+    function resetAddressFields() {
+      province.innerHTML = `<option value="">Select region first</option>`;
+      cityMunicipality.innerHTML = `<option value="">Select region or province first</option>`;
+      barangay.innerHTML = `<option value="">Select city/municipality first</option>`;
+    }
+    function setFieldsDisabled(disabled) {
+      [studentNumber,lastName,firstName,middleInitial,birthdate,gender,college,department,course,email,phone,photo,region,province,cityMunicipality,barangay,streetAddress].forEach(field => {
+        field.disabled = disabled;
+        field.classList.toggle("opacity-70", disabled);
+        field.classList.toggle("cursor-not-allowed", disabled);
+      });
+    }
+    function resetStudentForm() {
+      document.getElementById("studentForm").reset();
+      photoPreview.src = "";
+      photoPreview.classList.add("hidden");
+      photoPlaceholder.classList.remove("hidden");
+      deleteStudentName.textContent = "";
+      populateAcademicColleges();
+      department.innerHTML = `<option value="">Select department</option>`;
+      course.innerHTML = `<option value="">Select course</option>`;
+      if (regionsData.length) setSelectOptions(region, regionsData, "Select region");
+      else region.innerHTML = `<option value="">Loading regions...</option>`;
+      resetAddressFields();
+      setFieldsDisabled(false);
+    }
+    function showFormMode() {
+      studentFormWrapper.classList.remove("hidden");
+      deleteWrapper.classList.add("hidden");
+    }
+    function showDeleteMode() {
+      studentFormWrapper.classList.add("hidden");
+      deleteWrapper.classList.remove("hidden");
+    }
+    async function fetchWithFallback(paths) {
+      const bases = ["https://psgc.cloud/api", "https://psgc.gitlab.io/api"];
+      for (const base of bases) {
+        try {
+          const responses = await Promise.all(paths.map(path => fetch(`${base}${path}`, { cache: "force-cache" })));
+          if (responses.every(r => r.ok)) return Promise.all(responses.map(r => r.json()));
+        } catch (error) {}
+      }
+      throw new Error("Unable to load PSGC data.");
+    }
+    async function loadPSGCData() {
+      try {
+        psgcStatus.textContent = "Loading PSGC address data...";
+        const [regions, provinces, cities, barangays] = await fetchWithFallback(["/regions", "/provinces", "/cities-municipalities", "/barangays"]);
+        regionsData = Array.isArray(regions) ? regions : [];
+        provincesData = Array.isArray(provinces) ? provinces : [];
+        citiesData = Array.isArray(cities) ? cities : [];
+        barangaysData = Array.isArray(barangays) ? barangays : [];
+        setSelectOptions(region, regionsData, "Select region");
+        resetAddressFields();
+        psgcStatus.textContent = "PSGC address data loaded successfully.";
+      } catch (error) {
+        region.innerHTML = `<option value="">Failed to load regions</option>`;
+        province.innerHTML = `<option value="">Failed to load provinces</option>`;
+        cityMunicipality.innerHTML = `<option value="">Failed to load cities/municipalities</option>`;
+        barangay.innerHTML = `<option value="">Failed to load barangays</option>`;
+        psgcStatus.textContent = "Unable to load PSGC data right now.";
+      }
+    }
+    function populateProvincesByRegion(regionCode) {
+      const filtered = provincesData.filter(item => item.regionCode === regionCode);
+      if (filtered.length) setSelectOptions(province, filtered, "Select province");
+      else province.innerHTML = `<option value="">No province available / direct city region</option>`;
+      cityMunicipality.innerHTML = `<option value="">Select region or province first</option>`;
+      barangay.innerHTML = `<option value="">Select city/municipality first</option>`;
+    }
+    function populateCities(regionCode, provinceCode = "") {
+      let filtered = [];
+      if (provinceCode) filtered = citiesData.filter(item => item.provinceCode === provinceCode);
+      else filtered = citiesData.filter(item => item.regionCode === regionCode);
+      if (filtered.length) setSelectOptions(cityMunicipality, filtered, "Select city / municipality");
+      else cityMunicipality.innerHTML = `<option value="">No city/municipality found</option>`;
+      barangay.innerHTML = `<option value="">Select city/municipality first</option>`;
+    }
+    function populateBarangays(cityCode) {
+      const filtered = barangaysData.filter(item => item.cityCode === cityCode);
+      if (filtered.length) setSelectOptions(barangay, filtered, "Select barangay");
+      else barangay.innerHTML = `<option value="">No barangay found</option>`;
+    }
+    async function setAddressValues(regionCode, provinceCode, cityCode, barangayCode) {
+      if (!regionCode) return;
+      region.value = regionCode;
+      populateProvincesByRegion(regionCode);
+      if (provinceCode) {
+        province.value = provinceCode;
+        populateCities(regionCode, provinceCode);
+      } else {
+        populateCities(regionCode, "");
+      }
+      if (cityCode) {
+        cityMunicipality.value = cityCode;
+        populateBarangays(cityCode);
+      }
+      if (barangayCode) barangay.value = barangayCode;
+    }
+    async function fillFormFromDataset(data) {
+      studentNumber.value = data.studentNumber || "";
+      lastName.value = data.lastName || "";
+      firstName.value = data.firstName || "";
+      middleInitial.value = data.middleInitial || "";
+      birthdate.value = data.birthdate || "";
+      gender.value = data.gender || "";
+      email.value = data.email || "";
+      phone.value = data.phone || "";
+      streetAddress.value = data.streetAddress || "";
+      if (data.college) {
+        college.value = data.college;
+        populateDepartments();
+      }
+      if (data.department) {
+        department.value = data.department;
+        populateCourses();
+      }
+      if (data.course) course.value = data.course;
+      await setAddressValues(data.regionCode || "", data.provinceCode || "", data.cityCode || "", data.barangayCode || "");
+    }
+
+    college.addEventListener("change", populateDepartments);
+    department.addEventListener("change", populateCourses);
+    region.addEventListener("change", () => {
+      const regionCode = region.value;
+      populateProvincesByRegion(regionCode);
+      populateCities(regionCode, "");
+    });
+    province.addEventListener("change", () => populateCities(region.value, province.value));
+    cityMunicipality.addEventListener("change", () => populateBarangays(cityMunicipality.value));
+    photo.addEventListener("change", () => {
+      const file = photo.files?.[0];
+      if (!file) {
+        photoPreview.src = "";
+        photoPreview.classList.add("hidden");
+        photoPlaceholder.classList.remove("hidden");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        photoPreview.src = e.target.result;
+        photoPreview.classList.remove("hidden");
+        photoPlaceholder.classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    if (openAddStudentModal) {
+      openAddStudentModal.addEventListener("click", () => {
+        currentModalMode = "add";
+        resetStudentForm();
+        showFormMode();
+        setFieldsDisabled(false);
+        studentModalTitle.textContent = "Add Student";
+        studentModalSubtitle.textContent = "Fill in the student information below.";
+        saveStudentBtn.textContent = "Save Student";
+        saveStudentBtn.classList.remove("hidden");
+        openStudentModal();
+      });
+    }
+
+    document.querySelectorAll(".student-action-btn").forEach(button => {
+      button.addEventListener("click", async () => {
+        const mode = button.dataset.mode;
+        currentModalMode = mode;
+        if (mode === "delete") {
+          resetStudentForm();
+          showDeleteMode();
+          studentModalTitle.textContent = "Delete Student";
+          studentModalSubtitle.textContent = "Please confirm this action.";
+          deleteStudentName.textContent = button.dataset.studentFullName || button.dataset.studentNumber || "this student";
+          saveStudentBtn.textContent = "Delete Student";
+          saveStudentBtn.classList.remove("hidden");
+          openStudentModal();
+          return;
+        }
+        resetStudentForm();
+        showFormMode();
+        await fillFormFromDataset(button.dataset);
+        if (mode === "view") {
+          setFieldsDisabled(true);
+          studentModalTitle.textContent = "View Student";
+          studentModalSubtitle.textContent = "Student details overview.";
+          saveStudentBtn.classList.add("hidden");
+        } else {
+          setFieldsDisabled(false);
+          studentModalTitle.textContent = "Edit Student";
+          studentModalSubtitle.textContent = "Update the student information below.";
+          saveStudentBtn.textContent = "Update Student";
+          saveStudentBtn.classList.remove("hidden");
+        }
+        openStudentModal();
+      });
+    });
+
+    closeStudentModal.addEventListener("click", closeStudentModalFn);
+    cancelStudentModal.addEventListener("click", closeStudentModalFn);
+    studentModal.addEventListener("click", (event) => {
+      if (event.target === studentModal) closeStudentModalFn();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !studentModal.classList.contains("hidden")) closeStudentModalFn();
+    });
+    saveStudentBtn.addEventListener("click", () => {
+      if (currentModalMode === "add") alert("Demo only: Save Student clicked. Connect this to your API/backend.");
+      else if (currentModalMode === "edit") alert("Demo only: Update Student clicked. Connect this to your API/backend.");
+      else if (currentModalMode === "delete") alert("Demo only: Delete Student clicked. Connect this to your API/backend.");
+      closeStudentModalFn();
+    });
+
+    populateAcademicColleges();
+    loadPSGCData();
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>BorrowBox - Employee Structure</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#3211d4",
+            "background-light": "#f6f6f8",
+            "background-dark": "#131022",
+          },
+          fontFamily: {
+            display: ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 2rem;
+      width: 2rem;
+      border-radius: 0.65rem;
+      color: #64748b;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .action-btn:hover { transform: translateY(-1px); }
+    .action-tooltip {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%; transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      background: #0f172a;
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 20;
+    }
+    .action-btn:hover .action-tooltip { opacity: 1; }
+    .action-view:hover { background: rgba(59,130,246,.12); color: #2563eb; }
+    .action-edit:hover { background: rgba(245,158,11,.14); color: #d97706; }
+    .action-delete:hover { background: rgba(239,68,68,.14); color: #dc2626; }
+    .action-print:hover { background: rgba(100,116,139,.14); color: #475569; }
+    .action-toggle.active:hover { background: rgba(16,185,129,.14); color: #059669; }
+    .action-toggle.inactive:hover { background: rgba(239,68,68,.14); color: #dc2626; }
+    .dark .action-view:hover { background: rgba(59,130,246,.2); color: #93c5fd; }
+    .dark .action-edit:hover { background: rgba(245,158,11,.2); color: #fbbf24; }
+    .dark .action-delete:hover { background: rgba(239,68,68,.2); color: #fca5a5; }
+    .dark .action-print:hover { background: rgba(100,116,139,.22); color: #cbd5e1; }
+    .dark .action-toggle.active:hover { background: rgba(16,185,129,.2); color: #6ee7b7; }
+    .dark .action-toggle.inactive:hover { background: rgba(239,68,68,.2); color: #fca5a5; }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { display:none; }
+    .slider {
+      position: absolute; cursor: pointer; inset: 0; background-color: #cbd5e1;
+      transition: .2s; border-radius: 9999px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 18px; width: 18px; left: 3px; top: 3px;
+      background-color: white; transition: .2s; border-radius: 9999px;
+    }
+    input:checked + .slider { background-color: #3211d4; }
+    input:checked + .slider:before { transform: translateX(20px); }
+    .page-btn.active {
+      background: #3211d4;
+      color: white;
+      border-color: #3211d4;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
+  <div class="relative flex min-h-screen w-full flex-col">
+    <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 text-primary">
+          <span class="material-symbols-outlined text-3xl font-bold">package_2</span>
+          <h2 class="text-xl font-bold tracking-tight">BorrowBox</h2>
+        </div>
+        <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+        <h1 class="text-sm font-semibold text-slate-600 dark:text-slate-400">Systems Admin / Employee Structure</h1>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden md:flex relative group">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+          <input class="h-10 w-64 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 pl-10 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Search employee structure..." type="text" />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative" type="button">
+            <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">notifications</span>
+            <span class="absolute top-2.5 right-2.5 flex h-2 w-2 rounded-full bg-red-500 border-2 border-white dark:border-background-dark"></span>
+          </button>
+
+          <button id="themeToggle" class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+            <span id="themeIcon" class="material-symbols-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-slate-800">
+          <div class="flex flex-col items-end text-xs">
+            <span class="font-bold">Dr. Sarah Miller</span>
+            <span class="text-slate-500">System Admin</span>
+          </div>
+          <div class="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
+            <img alt="Profile Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADN3bvfY6DHfKVx8U2MI1tqek1n7pFF7spt4QlQmHqHFwJhF3ZUb-h4VmEUuJb6DFAZ-tOS0FmfxAIMJWXLZFu4CX9bIoifOHb2wBBhe7awuE8WA03VL2eFtb-xsHWcW2WCopNTFmIO9PEaUDjuQRd7_8vq1Xi3gWiOaE8rK1oO8iW9749gn3xxb-RlHscSwtsHs5Po302Yv2hrvMmoN2GwzKtBpMT3SwOQODaDm__Brq8lDH_OrXrlQ7fvzK4_RTLLWMCyhErsO8" />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <aside id="appSidebar" class="hidden lg:flex w-80 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4 overflow-y-auto transition-all duration-300">
+        <nav class="space-y-1">
+          <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">General</p>
+
+          <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="admindashboard.html">
+            <span class="material-symbols-outlined text-xl">grid_view</span>
+            <span class="text-sm">Dashboard</span>
+          </a>
+
+          <div class="pt-4 pb-2">
+            <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Management</p>
+
+            <button class="menu-toggle w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" type="button" data-target="userManagementMenu" aria-expanded="false">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-xl">group</span>
+                <span class="text-sm">User Management</span>
+              </div>
+              <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+            </button>
+
+            <div id="userManagementMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="students.html">
+                <span class="material-symbols-outlined text-lg">school</span>
+                <span>Students</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="employees.html">
+                <span class="material-symbols-outlined text-lg">badge</span>
+                <span>Employees</span>
+              </a>
+            </div>
+
+            <button class="menu-toggle mt-1 w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" type="button" data-target="inventoryMenu" aria-expanded="false">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-xl">inventory_2</span>
+                <span class="text-sm">Inventory</span>
+              </div>
+              <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+            </button>
+
+            <div id="inventoryMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="itemmasterfile.html">
+                <span class="material-symbols-outlined text-lg">inventory</span>
+                <span>Item Masterfile</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="itemmanagement.html">
+                <span class="material-symbols-outlined text-lg">edit_note</span>
+                <span>Item Management</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="incomingitems.html">
+                <span class="material-symbols-outlined text-lg">south_west</span>
+                <span>Incoming Items</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="outgoingitems.html">
+                <span class="material-symbols-outlined text-lg">north_east</span>
+                <span>Outgoing Items</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="stockreport.html">
+                <span class="material-symbols-outlined text-lg">assessment</span>
+                <span>Stock Report</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="pt-4 pb-2">
+            <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Operations</p>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowingrequests.html">
+              <span class="material-symbols-outlined text-xl">handshake</span>
+              <span class="text-sm">Borrowing Requests</span>
+              <span class="ml-auto bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold">12</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="returns.html">
+              <span class="material-symbols-outlined text-xl">assignment_return</span>
+              <span class="text-sm">Returns</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowinghistory.html">
+              <span class="material-symbols-outlined text-xl">history</span>
+              <span class="text-sm">Borrowing History</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-red-500 transition-colors" href="overdueitems.html">
+              <span class="material-symbols-outlined text-xl">error_outline</span>
+              <span class="text-sm font-medium">Overdue Items</span>
+              <span class="ml-auto bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
+            </a>
+          </div>
+
+          <div class="pt-4 pb-2">
+            <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Systems Admin</p>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="reports.html">
+              <span class="material-symbols-outlined text-xl">analytics</span>
+              <span class="text-sm">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="rolemanagement.html">
+              <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+              <span class="text-sm">Role Management</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowingpolicies.html">
+              <span class="material-symbols-outlined text-xl">policy</span>
+              <span class="text-sm">Borrowing Policies</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="auditlogs.html">
+              <span class="material-symbols-outlined text-xl">receipt_long</span>
+              <span class="text-sm">Audit Logs</span>
+            </a>
+
+            <button class="menu-toggle mt-1 w-full flex items-center justify-between px-3 py-2 rounded-lg bg-primary text-white font-medium" type="button" data-target="systemSetupMenu" aria-expanded="true">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-xl">settings</span>
+                <span class="text-sm">System Setup</span>
+              </div>
+              <span class="material-symbols-outlined text-sm menu-arrow">expand_less</span>
+            </button>
+
+            <div id="systemSetupMenu" class="ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="coursemanagement.html">
+                <span class="material-symbols-outlined text-lg">account_tree</span>
+                <span>Academic Structure</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm bg-primary/10 text-primary dark:bg-primary/20 dark:text-white font-semibold" href="employeesetup.html">
+                <span class="material-symbols-outlined text-lg">business_center</span>
+                <span>Employee Structure</span>
+              </a>
+              <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="systemconfig.html">
+                <span class="material-symbols-outlined text-lg">tune</span>
+                <span>System Configuration</span>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="mt-auto space-y-3 pt-4">
+          <a href="signin.html" class="flex items-center justify-center gap-2 w-full rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-100 transition-colors dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            <span>Sign Out</span>
+          </a>
+
+          <div class="p-4 bg-primary/5 rounded-xl border border-primary/10">
+            <p class="text-xs font-semibold text-primary mb-1">Academic Year 25/26</p>
+            <p class="text-[10px] text-slate-500 leading-tight">Server status: Operational<br />Last backup: 2h ago</p>
+          </div>
+        </div>
+      </aside>
+
+      <button id="sidebarToggleDesktop" type="button" class="hidden lg:flex fixed top-[88px] left-[304px] z-50 h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 shadow-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300" title="Toggle Sidebar" aria-label="Toggle Sidebar">
+        <span id="sidebarToggleIcon" class="material-symbols-outlined text-[20px]">left_panel_close</span>
+      </button>
+
+      <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
+        <section class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">System Setup</p>
+            <h2 class="text-3xl font-bold tracking-tight mt-1">Employee Structure</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-3xl">Manage departments and position assignments with teaching and non-teaching logic, employee tagging, and optional OIC designation.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <button data-open-modal="departmentModal" class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 transition-colors" type="button">
+              <span class="material-symbols-outlined text-lg">add_home_work</span>
+              <span>Add Department</span>
+            </button>
+            <button data-open-modal="positionModal" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
+              <span class="material-symbols-outlined text-lg">playlist_add</span>
+              <span>Add Position</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">apartment</span>
+              <span class="text-xs font-semibold text-slate-500">Configured</span>
+            </div>
+            <p class="text-sm text-slate-500">Departments</p>
+            <p class="text-3xl font-bold mt-1">5</p>
+            <p class="text-xs text-slate-500 mt-2">IT, HR, Finance, Registrar, Clinic</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <span class="material-symbols-outlined text-amber-500 bg-amber-500/10 p-2 rounded-lg">badge</span>
+              <span class="text-xs font-semibold text-slate-500">Mapped</span>
+            </div>
+            <p class="text-sm text-slate-500">Positions</p>
+            <p class="text-3xl font-bold mt-1">11</p>
+            <p class="text-xs text-slate-500 mt-2">Teaching and non-teaching roles with employee tags</p>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <span class="material-symbols-outlined text-emerald-500 bg-emerald-500/10 p-2 rounded-lg">person_check</span>
+              <span class="text-xs font-semibold text-slate-500">Assigned</span>
+            </div>
+            <p class="text-sm text-slate-500">Tagged Employees</p>
+            <p class="text-3xl font-bold mt-1">8</p>
+            <p class="text-xs text-slate-500 mt-2">Role ownership with OIC option available</p>
+          </div>
+        </section>
+
+        <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="px-6 pt-6">
+            <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
+              <button class="employee-tab-btn inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white" data-tab="departmentsTab" type="button">
+                <span class="material-symbols-outlined text-lg">apartment</span><span>Departments</span>
+              </button>
+              <button class="employee-tab-btn inline-flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300" data-tab="positionsTab" type="button">
+                <span class="material-symbols-outlined text-lg">badge</span><span>Positions</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="departmentsTab" class="employee-tab-content p-6 space-y-5">
+            <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div class="flex flex-wrap gap-3">
+                <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+                  Type
+                  <select id="departmentTypeFilter" class="h-10 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+                    <option>All</option>
+                    <option>Teaching</option>
+                    <option>Non Teaching</option>
+                  </select>
+                </label>
+                <label id="departmentCollegeFilterWrap" class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+                  College / Department
+                  <select id="departmentCollegeFilter" class="h-10 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+                    <option>All Colleges</option>
+                    <option>College of Computer Studies</option>
+                    <option>College of Engineering</option>
+                    <option>College of Business and Accountancy</option>
+                  </select>
+                </label>
+              </div>
+              <button data-open-modal="departmentModal" class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors" type="button">
+                <span class="material-symbols-outlined text-lg">add</span>
+                <span>Add Department</span>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th class="px-6 py-3">Department Name</th>
+                    <th class="px-6 py-3">Type</th>
+                    <th class="px-6 py-3">College / Department</th>
+                    <th class="px-6 py-3">Status</th>
+                    <th class="px-6 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="departmentsTableBody">
+                  <tr class="department-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Human Resources Department</p>
+                      <p class="text-xs text-slate-500">Handles recruitment, personnel, and staff welfare</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4">Human Resources Department</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="department-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Teaching" data-college="College of Computer Studies">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Information Technology Department</p>
+                      <p class="text-xs text-slate-500">Academic department under College of Computer Studies</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-1 text-[11px] font-semibold">Teaching</span></td>
+                    <td class="px-6 py-4">College of Computer Studies</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="department-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Teaching" data-college="College of Engineering">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Electronics Communication Department</p>
+                      <p class="text-xs text-slate-500">Academic department for ECE specialization</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-1 text-[11px] font-semibold">Teaching</span></td>
+                    <td class="px-6 py-4">College of Engineering</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 px-2.5 py-1 text-[11px] font-semibold">Inactive</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="false"></div></td>
+                  </tr>
+                  <tr class="department-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Finance Department</p>
+                      <p class="text-xs text-slate-500">Budgeting, accounting, and disbursement office</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4">Finance Department</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="department-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Clinic</p>
+                      <p class="text-xs text-slate-500">Health services and medical support unit</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4">Clinic</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-col gap-3 border-t border-slate-200 dark:border-slate-800 pt-5 sm:flex-row sm:items-center sm:justify-between">
+              <p class="text-xs text-slate-500">Showing <span id="deptShowingRange" class="font-semibold text-slate-700 dark:text-slate-200">1-3</span> of <span id="deptTotalCount" class="font-semibold text-slate-700 dark:text-slate-200">5</span> departments</p>
+              <div class="flex items-center gap-2">
+                <button id="deptPrevBtn" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed" type="button">
+                  <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                </button>
+                <div id="deptPageNumbers" class="flex items-center gap-2"></div>
+                <button id="deptNextBtn" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed" type="button">
+                  <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="positionsTab" class="employee-tab-content hidden p-6 space-y-5">
+            <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div class="flex flex-wrap gap-3">
+                <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+                  Employee Type
+                  <select id="positionTypeFilter" class="h-10 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+                    <option>All</option>
+                    <option>Teaching</option>
+                    <option>Non Teaching</option>
+                  </select>
+                </label>
+                <label id="positionCollegeFilterWrap" class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+                  College
+                  <select id="positionCollegeFilter" class="h-10 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+                    <option>All Colleges</option>
+                    <option>College of Engineering</option>
+                    <option>College of Computer Studies</option>
+                    <option>College of Business and Accountancy</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+                  Department
+                  <select id="positionDepartmentFilter" class="h-10 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+                    <option>All Departments</option>
+                  </select>
+                </label>
+              </div>
+              <button data-open-modal="positionModal" class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors" type="button">
+                <span class="material-symbols-outlined text-lg">add</span>
+                <span>Add Position</span>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th class="px-6 py-3">Position</th>
+                    <th class="px-6 py-3">Type</th>
+                    <th class="px-6 py-3">College</th>
+                    <th class="px-6 py-3">Department</th>
+                    <th class="px-6 py-3">Tagged Employee</th>
+                    <th class="px-6 py-3">OIC</th>
+                    <th class="px-6 py-3">Status</th>
+                    <th class="px-6 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800" id="positionsTableBody">
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Teaching" data-college="College of Engineering" data-department="Electronics Communication Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Dean</p>
+                      <p class="text-xs text-slate-500">College-level leadership role</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-1 text-[11px] font-semibold">Teaching</span></td>
+                    <td class="px-6 py-4">College of Engineering</td>
+                    <td class="px-6 py-4 text-slate-500">—</td>
+                    <td class="px-6 py-4">Employee A</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Off</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Teaching" data-college="College of Engineering" data-department="Electronics Communication Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Chairperson</p>
+                      <p class="text-xs text-slate-500">Department head role</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-1 text-[11px] font-semibold">Teaching</span></td>
+                    <td class="px-6 py-4">College of Engineering</td>
+                    <td class="px-6 py-4">Electronics Communication Department</td>
+                    <td class="px-6 py-4">Employee B</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2.5 py-1 text-[11px] font-semibold">On</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Teaching" data-college="College of Computer Studies" data-department="Information Technology Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Program Head</p>
+                      <p class="text-xs text-slate-500">Coordinates IT academic delivery</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-1 text-[11px] font-semibold">Teaching</span></td>
+                    <td class="px-6 py-4">College of Computer Studies</td>
+                    <td class="px-6 py-4">Information Technology Department</td>
+                    <td class="px-6 py-4">Employee F</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Off</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="" data-department="Human Resources Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">HR Manager</p>
+                      <p class="text-xs text-slate-500">Leads HR policies and staffing</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4 text-slate-500">—</td>
+                    <td class="px-6 py-4">Human Resources Department</td>
+                    <td class="px-6 py-4">Employee C</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Off</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="" data-department="Human Resources Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">HR Supervisor</p>
+                      <p class="text-xs text-slate-500">Supervises recruitment and records</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4 text-slate-500">—</td>
+                    <td class="px-6 py-4">Human Resources Department</td>
+                    <td class="px-6 py-4">Employee D</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Off</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="" data-department="Human Resources Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">HR Staff</p>
+                      <p class="text-xs text-slate-500">Supports day-to-day HR operations</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4 text-slate-500">—</td>
+                    <td class="px-6 py-4">Human Resources Department</td>
+                    <td class="px-6 py-4">Employee E</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Off</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 px-2.5 py-1 text-[11px] font-semibold">Inactive</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="false"></div></td>
+                  </tr>
+                  <tr class="position-row hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" data-type="Non Teaching" data-college="" data-department="Finance Department">
+                    <td class="px-6 py-4">
+                      <p class="font-semibold">Finance Manager</p>
+                      <p class="text-xs text-slate-500">Heads finance operations and approvals</p>
+                    </td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Non Teaching</span></td>
+                    <td class="px-6 py-4 text-slate-500">—</td>
+                    <td class="px-6 py-4">Finance Department</td>
+                    <td class="px-6 py-4">Employee G</td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 text-[11px] font-semibold">Off</span></td>
+                    <td class="px-6 py-4"><span class="inline-flex rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2.5 py-1 text-[11px] font-semibold">Active</span></td>
+                    <td class="px-6 py-4"><div class="action-wrap flex items-center justify-end gap-2" data-active="true"></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="departmentModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4">
+        <div>
+          <h3 class="text-lg font-bold">Add Department</h3>
+          <p class="text-xs text-slate-500 mt-1">Create a teaching or non-teaching department for position mapping.</p>
+        </div>
+        <button class="modal-close flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Department Type
+          <select id="departmentType" class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option>Teaching</option>
+            <option>Non Teaching</option>
+          </select>
+        </label>
+        <label id="collegeFieldDepartment" class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          College
+          <select class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option>College of Engineering</option>
+            <option>College of Computer Studies</option>
+            <option>College of Business and Accountancy</option>
+          </select>
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Department Name
+          <input type="text" value="Registrar's Office" class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary" />
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Code
+          <input type="text" value="RO" class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary" />
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500 md:col-span-2">
+          Description
+          <textarea class="rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary" rows="3">Handles enrollment records, registration, and transcript requests.</textarea>
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Status
+          <select class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option selected>Active</option>
+            <option>Inactive</option>
+          </select>
+        </label>
+      </div>
+      <div class="flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800 px-6 py-4">
+        <button class="modal-close rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">Cancel</button>
+        <button class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors" type="button">Save Department</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="positionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-3xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4">
+        <div>
+          <h3 class="text-lg font-bold">Add Position</h3>
+          <p class="text-xs text-slate-500 mt-1">Set whether the role is teaching or non-teaching, tag an employee optionally, and mark OIC when needed.</p>
+        </div>
+        <button class="modal-close flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Position Type
+          <select id="positionType" class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option>Teaching</option>
+            <option>Non Teaching</option>
+          </select>
+        </label>
+        <label id="collegeFieldPosition" class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          College
+          <select class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option>College of Engineering</option>
+            <option>College of Computer Studies</option>
+            <option>College of Business and Accountancy</option>
+          </select>
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Department
+          <select class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option>Human Resources Department</option>
+            <option>Information Technology Department</option>
+            <option>Electronics Communication Department</option>
+            <option>Finance Department</option>
+          </select>
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Position Name
+          <input type="text" value="Assistant Dean" class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary" />
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Tag Employee (Optional)
+          <input type="text" value="" placeholder="Type employee name for intellisearch..." class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary" />
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-medium text-slate-500">
+          Status
+          <select class="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-sm focus:border-primary focus:ring-primary">
+            <option selected>Active</option>
+            <option>Inactive</option>
+          </select>
+        </label>
+
+        <div class="md:col-span-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-4 py-3 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-semibold">Officer-in-Charge (OIC)</p>
+            <p class="text-xs text-slate-500">Turn on only if this role is currently acting in an OIC capacity. Default is off.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 border-t border-slate-200 dark:border-slate-800 px-6 py-4">
+        <button class="modal-close rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">Cancel</button>
+        <button class="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors" type="button">Save Position</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function actionButtons(isActive = true) {
+      const toggleIcon = isActive ? 'toggle_on' : 'toggle_off';
+      const toggleTooltip = isActive ? 'Deactivate' : 'Activate';
+      const toggleState = isActive ? 'active' : 'inactive';
+      return `
+        <button class="action-btn action-view" type="button"><span class="material-symbols-outlined text-[18px]">visibility</span><span class="action-tooltip">View</span></button>
+        <button class="action-btn action-edit" type="button"><span class="material-symbols-outlined text-[18px]">edit</span><span class="action-tooltip">Edit</span></button>
+        <button class="action-btn action-delete" type="button"><span class="material-symbols-outlined text-[18px]">delete</span><span class="action-tooltip">Delete</span></button>
+        <button class="action-btn action-print" type="button"><span class="material-symbols-outlined text-[18px]">print</span><span class="action-tooltip">Print</span></button>
+        <button class="action-btn action-toggle ${toggleState}" type="button"><span class="material-symbols-outlined text-[20px]">${toggleIcon}</span><span class="action-tooltip">${toggleTooltip}</span></button>
+      `;
+    }
+    document.querySelectorAll('.action-wrap').forEach(el => {
+      const active = el.dataset.active === "true";
+      el.innerHTML = actionButtons(active);
+    });
+
+    const sidebar = document.getElementById("appSidebar");
+    const sidebarToggleDesktop = document.getElementById("sidebarToggleDesktop");
+    const sidebarToggleIcon = document.getElementById("sidebarToggleIcon");
+    if (sidebar && sidebarToggleDesktop && sidebarToggleIcon) {
+      let sidebarHidden = false;
+      function updateSidebarState() {
+        if (sidebarHidden) {
+          sidebar.classList.add("!hidden");
+          sidebarToggleDesktop.style.left = "16px";
+          sidebarToggleIcon.textContent = "left_panel_open";
+          sidebarToggleDesktop.title = "Show Sidebar";
+          sidebarToggleDesktop.setAttribute("aria-label", "Show Sidebar");
+        } else {
+          sidebar.classList.remove("!hidden");
+          sidebarToggleDesktop.style.left = "304px";
+          sidebarToggleIcon.textContent = "left_panel_close";
+          sidebarToggleDesktop.title = "Hide Sidebar";
+          sidebarToggleDesktop.setAttribute("aria-label", "Hide Sidebar");
+        }
+      }
+      sidebarToggleDesktop.addEventListener("click", () => { sidebarHidden = !sidebarHidden; updateSidebarState(); });
+      updateSidebarState();
+    }
+
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem("borrowbox-theme");
+    if (savedTheme === "dark") root.classList.add("dark"); else root.classList.remove("dark");
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    function updateThemeIcon() { themeIcon.textContent = root.classList.contains("dark") ? "light_mode" : "dark_mode"; }
+    updateThemeIcon();
+    themeToggle.addEventListener("click", () => {
+      root.classList.toggle("dark");
+      localStorage.setItem("borrowbox-theme", root.classList.contains("dark") ? "dark" : "light");
+      updateThemeIcon();
+    });
+
+    document.querySelectorAll(".menu-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId = button.getAttribute("data-target");
+        const target = document.getElementById(targetId);
+        const arrow = button.querySelector(".menu-arrow");
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        if (expanded) {
+          target.classList.add("hidden");
+          button.setAttribute("aria-expanded", "false");
+          if (arrow) arrow.textContent = "expand_more";
+        } else {
+          target.classList.remove("hidden");
+          button.setAttribute("aria-expanded", "true");
+          if (arrow) arrow.textContent = "expand_less";
+        }
+      });
+    });
+
+    const tabBtns = document.querySelectorAll('.employee-tab-btn');
+    const tabContents = document.querySelectorAll('.employee-tab-content');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => {
+          b.classList.remove('bg-primary','text-white');
+          b.classList.add('bg-slate-100','dark:bg-slate-800','text-slate-600','dark:text-slate-300');
+        });
+        btn.classList.add('bg-primary','text-white');
+        btn.classList.remove('bg-slate-100','dark:bg-slate-800','text-slate-600','dark:text-slate-300');
+        tabContents.forEach(c => c.classList.add('hidden'));
+        document.getElementById(btn.dataset.tab).classList.remove('hidden');
+      });
+    });
+
+    const modalButtons = document.querySelectorAll('[data-open-modal]');
+    const closeButtons = document.querySelectorAll('.modal-close');
+    modalButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modal = document.getElementById(btn.dataset.openModal);
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          document.body.classList.add('overflow-hidden');
+        }
+      });
+    });
+    function closeModal(modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    }
+    closeButtons.forEach(btn => btn.addEventListener('click', () => closeModal(btn.closest('[id$="Modal"]'))));
+    document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
+    });
+
+    const departmentType = document.getElementById('departmentType');
+    const collegeFieldDepartment = document.getElementById('collegeFieldDepartment');
+    function syncDepartmentType() {
+      collegeFieldDepartment.style.display = departmentType.value === 'Teaching' ? 'flex' : 'none';
+    }
+    departmentType.addEventListener('change', syncDepartmentType);
+    syncDepartmentType();
+
+    const positionType = document.getElementById('positionType');
+    const collegeFieldPosition = document.getElementById('collegeFieldPosition');
+    function syncPositionType() {
+      collegeFieldPosition.style.display = positionType.value === 'Teaching' ? 'flex' : 'none';
+    }
+    positionType.addEventListener('change', syncPositionType);
+    syncPositionType();
+
+    // Departments main-screen filters + pagination
+    const departmentRows = Array.from(document.querySelectorAll('.department-row'));
+    const departmentTypeFilter = document.getElementById('departmentTypeFilter');
+    const departmentCollegeFilterWrap = document.getElementById('departmentCollegeFilterWrap');
+    const departmentCollegeFilter = document.getElementById('departmentCollegeFilter');
+    const deptPrevBtn = document.getElementById('deptPrevBtn');
+    const deptNextBtn = document.getElementById('deptNextBtn');
+    const deptPageNumbers = document.getElementById('deptPageNumbers');
+    const deptShowingRange = document.getElementById('deptShowingRange');
+    const deptTotalCount = document.getElementById('deptTotalCount');
+    const deptPageSize = 3;
+    let deptCurrentPage = 1;
+    let filteredDeptRows = departmentRows.slice();
+
+    const departmentFilterOptions = [
+      { label: 'College of Computer Studies', type: 'Teaching', value: 'College of Computer Studies' },
+      { label: 'College of Engineering', type: 'Teaching', value: 'College of Engineering' },
+      { label: 'College of Business and Accountancy', type: 'Teaching', value: 'College of Business and Accountancy' },
+      { label: 'Human Resources Department', type: 'Non Teaching', value: 'Human Resources Department' },
+      { label: 'Finance Department', type: 'Non Teaching', value: 'Finance Department' },
+      { label: 'Clinic', type: 'Non Teaching', value: 'Clinic' }
+    ];
+
+    function populateDepartmentMainFilter() {
+      const selectedType = departmentTypeFilter.value;
+      const previousValue = departmentCollegeFilter.value;
+
+      let options = departmentFilterOptions.slice();
+      if (selectedType === 'Teaching') {
+        options = options.filter(opt => opt.type === 'Teaching');
+      } else if (selectedType === 'Non Teaching') {
+        options = options.filter(opt => opt.type === 'Non Teaching');
+      }
+
+      const defaultLabel = selectedType === 'Non Teaching' ? 'All Departments' : 'All Colleges';
+      departmentCollegeFilter.innerHTML =
+        `<option value="${defaultLabel}">${defaultLabel}</option>` +
+        options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('');
+
+      const optionExists = Array.from(departmentCollegeFilter.options).some(opt => opt.value === previousValue);
+      departmentCollegeFilter.value = optionExists ? previousValue : defaultLabel;
+    }
+
+    function filterDepartments() {
+      const type = departmentTypeFilter.value;
+      populateDepartmentMainFilter();
+      const selectedFilter = departmentCollegeFilter.value;
+      const allLabel = type === 'Non Teaching' ? 'All Departments' : 'All Colleges';
+
+      filteredDeptRows = departmentRows.filter(row => {
+        const rowType = row.dataset.type;
+        const rowCollege = row.dataset.college || '';
+        const rowDepartmentName = row.querySelector('td:first-child p.font-semibold')?.textContent.trim() || '';
+
+        let show = true;
+
+        if (type !== 'All' && rowType !== type) show = false;
+
+        if (show && selectedFilter !== allLabel) {
+          if (type === 'Non Teaching') {
+            if (rowDepartmentName !== selectedFilter) show = false;
+          } else if (type === 'Teaching') {
+            if (rowCollege !== selectedFilter) show = false;
+          } else {
+            // All: dropdown contains both teaching colleges and non-teaching departments
+            const optionMeta = departmentFilterOptions.find(opt => opt.value === selectedFilter);
+            if (optionMeta?.type === 'Teaching') {
+              if (rowType !== 'Teaching' || rowCollege !== selectedFilter) show = false;
+            } else if (optionMeta?.type === 'Non Teaching') {
+              if (rowType !== 'Non Teaching' || rowDepartmentName !== selectedFilter) show = false;
+            }
+          }
+        }
+
+        return show;
+      });
+
+      deptCurrentPage = 1;
+      renderDepartmentTable();
+    }
+
+    function renderDepartmentTable() {
+      const total = filteredDeptRows.length;
+      const totalPages = Math.max(1, Math.ceil(total / deptPageSize));
+      if (deptCurrentPage > totalPages) deptCurrentPage = totalPages;
+
+      const start = (deptCurrentPage - 1) * deptPageSize;
+      const end = start + deptPageSize;
+
+      departmentRows.forEach(row => row.style.display = 'none');
+      filteredDeptRows.slice(start, end).forEach(row => row.style.display = '');
+
+      deptTotalCount.textContent = total;
+      if (total === 0) {
+        deptShowingRange.textContent = '0-0';
+      } else {
+        deptShowingRange.textContent = `${start + 1}-${Math.min(end, total)}`;
+      }
+
+      deptPrevBtn.disabled = deptCurrentPage === 1;
+      deptNextBtn.disabled = deptCurrentPage === totalPages || total === 0;
+
+      deptPageNumbers.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `page-btn inline-flex h-9 min-w-[36px] items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-3 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800`;
+        if (i === deptCurrentPage) btn.classList.add('active');
+        btn.textContent = i;
+        btn.addEventListener('click', () => {
+          deptCurrentPage = i;
+          renderDepartmentTable();
+        });
+        deptPageNumbers.appendChild(btn);
+      }
+    }
+
+    departmentTypeFilter.addEventListener('change', filterDepartments);
+    departmentCollegeFilter.addEventListener('change', filterDepartments);
+    deptPrevBtn.addEventListener('click', () => {
+      if (deptCurrentPage > 1) {
+        deptCurrentPage--;
+        renderDepartmentTable();
+      }
+    });
+    deptNextBtn.addEventListener('click', () => {
+      const totalPages = Math.max(1, Math.ceil(filteredDeptRows.length / deptPageSize));
+      if (deptCurrentPage < totalPages) {
+        deptCurrentPage++;
+        renderDepartmentTable();
+      }
+    });
+
+// Positions filters (untouched)
+    const departmentOptions = [
+      { name: 'Human Resources Department', type: 'Non Teaching', college: '' },
+      { name: 'Finance Department', type: 'Non Teaching', college: '' },
+      { name: 'Clinic', type: 'Non Teaching', college: '' },
+      { name: 'Information Technology Department', type: 'Teaching', college: 'College of Computer Studies' },
+      { name: 'Electronics Communication Department', type: 'Teaching', college: 'College of Engineering' }
+    ];
+
+    const positionTypeFilter = document.getElementById('positionTypeFilter');
+    const positionCollegeFilterWrap = document.getElementById('positionCollegeFilterWrap');
+    const positionCollegeFilter = document.getElementById('positionCollegeFilter');
+    const positionDepartmentFilter = document.getElementById('positionDepartmentFilter');
+    const positionRows = document.querySelectorAll('.position-row');
+
+    function populatePositionDepartmentFilter() {
+      const selectedType = positionTypeFilter.value;
+      const selectedCollege = positionCollegeFilter.value;
+      let filteredDepartments = departmentOptions.slice();
+
+      if (selectedType !== 'All') {
+        filteredDepartments = filteredDepartments.filter(d => d.type === selectedType);
+      }
+
+      if (selectedType !== 'Non Teaching' && selectedCollege !== 'All Colleges') {
+        filteredDepartments = filteredDepartments.filter(d => d.college === selectedCollege);
+      }
+
+      const previousValue = positionDepartmentFilter.value;
+      positionDepartmentFilter.innerHTML = '<option>All Departments</option>' +
+        filteredDepartments.map(d => `<option>${d.name}</option>`).join('');
+
+      const optionExists = Array.from(positionDepartmentFilter.options).some(opt => opt.value === previousValue);
+      positionDepartmentFilter.value = optionExists ? previousValue : 'All Departments';
+    }
+
+    function applyPositionFilters() {
+      const selectedType = positionTypeFilter.value;
+      const selectedCollege = positionCollegeFilter.value;
+      const selectedDepartment = positionDepartmentFilter.value;
+
+      if (selectedType === 'Non Teaching') {
+        positionCollegeFilterWrap.style.display = 'none';
+        positionCollegeFilter.value = 'All Colleges';
+      } else {
+        positionCollegeFilterWrap.style.display = 'flex';
+      }
+
+      populatePositionDepartmentFilter();
+
+      positionRows.forEach(row => {
+        const rowType = row.dataset.type;
+        const rowCollege = row.dataset.college || '';
+        const rowDepartment = row.dataset.department;
+
+        let show = true;
+
+        if (selectedType !== 'All' && rowType !== selectedType) {
+          show = false;
+        }
+
+        if (show && selectedType !== 'Non Teaching' && selectedCollege !== 'All Colleges' && rowCollege !== selectedCollege) {
+          show = false;
+        }
+
+        if (show && selectedDepartment !== 'All Departments' && rowDepartment !== selectedDepartment) {
+          show = false;
+        }
+
+        row.style.display = show ? '' : 'none';
+      });
+    }
+
+    positionTypeFilter.addEventListener('change', applyPositionFilters);
+    positionCollegeFilter.addEventListener('change', applyPositionFilters);
+    positionDepartmentFilter.addEventListener('change', applyPositionFilters);
+
+    filterDepartments();
+    applyPositionFilters();
+  </script>
+</body>
+</html>

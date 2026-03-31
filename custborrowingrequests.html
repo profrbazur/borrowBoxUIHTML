@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BorrowBox Custodian - Borrowing Requests</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3211d4',
+            'background-light': '#f6f6f8',
+            'background-dark': '#131022',
+          },
+          fontFamily: { display: ['Inter', 'sans-serif'] },
+          borderRadius: {
+            DEFAULT: '0.25rem',
+            lg: '0.5rem',
+            xl: '0.75rem',
+            full: '9999px'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased transition-colors duration-200">
+
+<header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6">
+  <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 text-primary">
+      <span class="material-symbols-outlined text-3xl font-bold">package_2</span>
+      <h2 class="text-xl font-bold tracking-tight">BorrowBox</h2>
+    </div>
+    <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+    <h1 class="text-sm font-semibold text-slate-600 dark:text-slate-400">Custodian Workspace</h1>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="hidden md:flex relative group">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+      <input class="h-10 w-64 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 pl-10 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Search requests, items, borrower..." type="text" />
+    </div>
+    <button class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative" type="button">
+      <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">notifications</span>
+      <span class="absolute top-2.5 right-2.5 flex h-2 w-2 rounded-full bg-red-500 border-2 border-white dark:border-background-dark"></span>
+    </button>
+    <button id="themeToggle" class="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" type="button">
+      <span id="themeIcon" class="material-symbols-outlined text-slate-600 dark:text-slate-300">dark_mode</span>
+    </button>
+    <div class="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-slate-800">
+      <div class="flex flex-col items-end text-xs">
+        <span class="font-bold">Maria Santos</span>
+        <span class="text-slate-500">Library Staff / Lab Custodian</span>
+      </div>
+      <div class="h-10 w-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">MS</div>
+    </div>
+  </div>
+</header>
+
+<div class="flex flex-1 overflow-hidden">
+  <aside id="appSidebar" class="hidden lg:flex w-80 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4 overflow-y-auto transition-all duration-300">
+    <nav class="space-y-1">
+      <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">General</p>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="custodiandashboard.html">
+              <span class="material-symbols-outlined text-xl">grid_view</span>
+              <span class="text-sm">Dashboard</span>
+
+            </a>
+      <div class="pt-4 pb-2">
+        <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Operations</p>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg  bg-primary text-white font-medium transition-colors" href="custborrowingrequests.html">
+              <span class="material-symbols-outlined text-xl">assignment_add</span>
+              <span class="text-sm">Borrowing Requests</span>
+              <span class="ml-auto bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold">18</span>
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="custitemissuance.html">
+              <span class="material-symbols-outlined text-xl">outbox</span>
+              <span class="text-sm">Item Issuance</span>
+              <span class="ml-auto bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[10px] px-2 py-0.5 rounded-full font-bold">6</span>
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="custreturnsprocessing.html">
+              <span class="material-symbols-outlined text-xl">assignment_return</span>
+              <span class="text-sm">Returns Processing</span>
+              <span class="ml-auto bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-red-500 transition-colors" href="custoverduemonitoring.html">
+              <span class="material-symbols-outlined text-xl">warning</span>
+              <span class="text-sm">Overdue Monitoring</span>
+              <span class="ml-auto bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="custtransactionhistory.html">
+              <span class="material-symbols-outlined text-xl">history</span>
+              <span class="text-sm">Transaction History</span>
+
+            </a>
+      </div>
+      <div class="pt-4 pb-2">
+        <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Inventory</p>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="custitemavailability.html">
+              <span class="material-symbols-outlined text-xl">inventory_2</span>
+              <span class="text-sm">Item Availability</span>
+
+            </a>
+      </div>
+      <div class="pt-4 pb-2">
+        <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">My Borrowing</p>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="requestitem.html">
+              <span class="material-symbols-outlined text-xl">add_shopping_cart</span>
+              <span class="text-sm">Request Item</span>
+
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="myborrowings.html">
+              <span class="material-symbols-outlined text-xl">inventory</span>
+              <span class="text-sm">My Borrowings</span>
+
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="returnitem.html">
+              <span class="material-symbols-outlined text-xl">assignment_returned</span>
+              <span class="text-sm">Return Item</span>
+
+            </a>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="studenthistory.html">
+              <span class="material-symbols-outlined text-xl">schedule</span>
+              <span class="text-sm">My Borrowing History</span>
+
+            </a>
+      </div>
+      <div class="pt-4 pb-2">
+        <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Notifications</p>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="alerts.html">
+              <span class="material-symbols-outlined text-xl">notifications_active</span>
+              <span class="text-sm">Alerts</span>
+
+            </a>
+      </div>
+      <div class="pt-4 pb-2">
+        <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Profile</p>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="myprofile.html">
+              <span class="material-symbols-outlined text-xl">person</span>
+              <span class="text-sm">My Profile</span>
+
+            </a>
+      </div>
+    </nav>
+    <div class="mt-auto space-y-3 pt-4">
+      <a href="signin.html" class="flex items-center justify-center gap-2 w-full rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-100 transition-colors dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        <span>Sign Out</span>
+      </a>
+      <div class="p-4 bg-primary/5 rounded-xl border border-primary/10">
+        <p class="text-xs font-semibold text-primary mb-1">Operational Shift Summary</p>
+        <p class="text-[10px] text-slate-500 leading-tight">AY 2025–2026 • 1st Semester<br />Front desk status: Active • 3 urgent tasks</p>
+      </div>
+    </div>
+  </aside>
+  <button id="sidebarToggleDesktop" type="button" class="hidden lg:flex fixed top-[88px] left-[304px] z-50 h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 shadow-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300">
+    <span id="sidebarToggleIcon" class="material-symbols-outlined text-[20px]">left_panel_close</span>
+  </button>
+
+  <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
+    <section class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Operations</p>
+        <h2 class="text-2xl font-extrabold mt-1">Borrowing Requests</h2>
+        <p class="text-sm text-slate-500 mt-2">Review submitted requests, validate borrower details, check availability, and approve or reject with remarks.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <button class="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white">Review Selected</button>
+        <button class="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold">Export Queue</button>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-sm text-slate-500">Submitted Today</p><p class="text-3xl font-bold mt-2">18</p></div>
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-sm text-slate-500">Pending Review</p><p class="text-3xl font-bold mt-2">12</p></div>
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-sm text-slate-500">Approved</p><p class="text-3xl font-bold mt-2">6</p></div>
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-sm text-slate-500">Rejected</p><p class="text-3xl font-bold mt-2">2</p></div>
+      <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-sm text-slate-500">Needs Verification</p><p class="text-3xl font-bold mt-2">3</p></div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
+        <input class="rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" placeholder="Search borrower, item, ref no." />
+        <select class="rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"><option>Status: All</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+        <select class="rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"><option>Borrower Type: All</option><option>Student</option><option>Faculty</option><option>Employee</option></select>
+        <select class="rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"><option>Category: All</option><option>Laptop</option><option>Projector</option><option>AV Equipment</option></select>
+        <input type="date" class="rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" />
+        <button class="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-semibold">Clear Filters</button>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div class="xl:col-span-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <h3 class="font-bold">Submitted Requests Queue</h3>
+          <span class="text-xs text-slate-500">Showing 8 of 18 requests</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+              <tr>
+                <th class="px-6 py-3">Borrower</th>
+                <th class="px-6 py-3">Requested Item</th>
+                <th class="px-6 py-3">Availability</th>
+                <th class="px-6 py-3">Schedule</th>
+                <th class="px-6 py-3 text-right">Decision</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                <td class="px-6 py-4"><p class="font-semibold">John Doe</p><p class="text-[11px] text-slate-500">Student • BSIT 3A • Ref BR-2026-00145</p></td>
+                <td class="px-6 py-4"><p class="font-semibold">Canon DSLR Camera</p><p class="text-[11px] text-slate-500">Qty 1 • AV Equipment</p></td>
+                <td class="px-6 py-4"><span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2 py-1 rounded-full text-[10px] font-bold">Available</span></td>
+                <td class="px-6 py-4 text-slate-500">Mar 31, 2026 • 8:00 AM</td>
+                <td class="px-6 py-4 text-right"><button class="bg-primary text-white px-3 py-1 rounded text-[11px] font-bold">Review</button></td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                <td class="px-6 py-4"><p class="font-semibold">Anna Cruz</p><p class="text-[11px] text-slate-500">Faculty • CCS • Ref BR-2026-00146</p></td>
+                <td class="px-6 py-4"><p class="font-semibold">LCD Projector</p><p class="text-[11px] text-slate-500">Qty 1 • Presentation</p></td>
+                <td class="px-6 py-4"><span class="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-1 rounded-full text-[10px] font-bold">Limited</span></td>
+                <td class="px-6 py-4 text-slate-500">Mar 31, 2026 • 10:30 AM</td>
+                <td class="px-6 py-4 text-right"><button class="bg-primary text-white px-3 py-1 rounded text-[11px] font-bold">Review</button></td>
+              </tr>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                <td class="px-6 py-4"><p class="font-semibold">Paolo Garcia</p><p class="text-[11px] text-slate-500">Employee • Marketing • Ref BR-2026-00147</p></td>
+                <td class="px-6 py-4"><p class="font-semibold">Tripod Stand</p><p class="text-[11px] text-slate-500">Qty 2 • AV Accessories</p></td>
+                <td class="px-6 py-4"><span class="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 px-2 py-1 rounded-full text-[10px] font-bold">Insufficient</span></td>
+                <td class="px-6 py-4 text-slate-500">Apr 1, 2026 • 1:00 PM</td>
+                <td class="px-6 py-4 text-right"><button class="bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded text-[11px] font-bold">Review</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+          <h3 class="font-bold">Request Review Panel</h3>
+          <div class="mt-4 space-y-4 text-sm">
+            <div>
+              <p class="text-slate-500">Borrower</p>
+              <p class="font-semibold">John Doe • BSIT 3A</p>
+            </div>
+            <div>
+              <p class="text-slate-500">Requested Item</p>
+              <p class="font-semibold">Canon DSLR Camera • Qty 1</p>
+            </div>
+            <div>
+              <p class="text-slate-500">Availability Check</p>
+              <p class="font-semibold text-emerald-600">1 unit ready for release</p>
+            </div>
+            <div>
+              <label class="text-slate-500 block mb-2">Custodian Remarks</label>
+              <textarea class="w-full rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" rows="4" placeholder="Add approval or rejection remarks..."></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <button class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">Approve</button>
+              <button class="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white">Reject</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+          <h3 class="font-bold">Borrower Details</h3>
+          <div class="mt-4 space-y-3 text-sm">
+            <div class="flex justify-between"><span class="text-slate-500">Email</span><span class="font-semibold">john.doe@school.edu</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Contact</span><span class="font-semibold">0917-555-1034</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Current Active Borrowings</span><span class="font-semibold">1</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Standing</span><span class="font-semibold text-emerald-600">Good</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+  <script>
+    const sidebar = document.getElementById('appSidebar');
+    const sidebarToggleDesktop = document.getElementById('sidebarToggleDesktop');
+    const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
+    if (sidebar && sidebarToggleDesktop && sidebarToggleIcon) {
+      let sidebarHidden = false;
+      function updateSidebarState() {
+        if (sidebarHidden) {
+          sidebar.classList.add('!hidden');
+          sidebarToggleDesktop.style.left = '16px';
+          sidebarToggleIcon.textContent = 'left_panel_open';
+        } else {
+          sidebar.classList.remove('!hidden');
+          sidebarToggleDesktop.style.left = '304px';
+          sidebarToggleIcon.textContent = 'left_panel_close';
+        }
+      }
+      sidebarToggleDesktop.addEventListener('click', () => { sidebarHidden = !sidebarHidden; updateSidebarState(); });
+      updateSidebarState();
+    }
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('borrowbox-theme');
+    if (savedTheme === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    function updateThemeIcon() { themeIcon.textContent = root.classList.contains('dark') ? 'light_mode' : 'dark_mode'; }
+    updateThemeIcon();
+    themeToggle.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('borrowbox-theme', root.classList.contains('dark') ? 'dark' : 'light');
+      updateThemeIcon();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Borrowing Policies | BorrowBox</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5',
+            'background-dark': '#0b1020',
+            'panel-dark': '#0f172a',
+            'panel-dark-2': '#111c33',
+            'line-dark': '#1e293b'
+          },
+          fontFamily: {
+            display: ['Inter', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 10px 30px rgba(2, 6, 23, 0.25)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 500,
+      'GRAD' 0,
+      'opsz' 24;
+    }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #0b1020; }
+    ::-webkit-scrollbar-thumb { background: #23314f; border-radius: 9999px; }
+    .tab-btn.active {
+      background: rgba(79, 70, 229, 0.18);
+      color: #fff;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .menu-content.hidden { display: none; }
+    .switch-input:checked + .switch-track {
+      background: rgb(79 70 229);
+    }
+    .switch-input:checked + .switch-track .switch-thumb {
+      transform: translateX(24px);
+    }
+    .modal.hidden { display: none; }
+  </style>
+</head>
+<body class="bg-background-dark text-slate-100 font-display antialiased">
+  <div class="min-h-screen flex flex-col">
+    <header class="sticky top-0 z-40 h-16 border-b border-line-dark bg-background-dark/90 backdrop-blur-md px-6 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 text-primary">
+          <span class="material-symbols-outlined text-3xl">package_2</span>
+          <span class="text-2xl font-extrabold tracking-tight">BorrowBox</span>
+        </div>
+        <div class="h-6 w-px bg-slate-700"></div>
+        <span class="text-sm font-semibold text-slate-400">Borrowing Policies</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden md:flex relative group">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">search</span>
+          <input class="h-10 w-72 rounded-xl border border-line-dark bg-panel-dark pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-500 focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Search policies..." type="text" />
+        </div>
+
+        <button id="themeToggle" class="h-10 w-10 rounded-xl border border-line-dark bg-panel-dark hover:bg-slate-800 transition flex items-center justify-center" type="button" title="Toggle theme">
+          <span id="themeIcon" class="material-symbols-outlined text-slate-300">light_mode</span>
+        </button>
+
+        <button class="h-10 w-10 rounded-xl border border-line-dark bg-panel-dark hover:bg-slate-800 transition flex items-center justify-center relative" type="button">
+          <span class="material-symbols-outlined text-slate-300">notifications</span>
+          <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500"></span>
+        </button>
+
+        <div class="flex items-center gap-3 pl-3 border-l border-line-dark">
+          <div class="text-right">
+            <p class="text-sm font-semibold">Alex Rivera</p>
+            <p class="text-xs text-slate-400">Inventory Manager</p>
+          </div>
+          <div class="h-10 w-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">person</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <aside id="appSidebar" class="hidden lg:flex w-80 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-4 overflow-y-auto transition-all duration-300">
+       <nav class="space-y-1">
+  <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">General</p>
+
+  <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white font-medium" href="admindashboard.html">
+    <span class="material-symbols-outlined text-xl">grid_view</span>
+    <span class="text-sm">Dashboard</span>
+  </a>
+
+  <div class="pt-4 pb-2">
+    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Management</p>
+
+    <button
+      class="menu-toggle w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      type="button"
+      data-target="userManagementMenu"
+      aria-expanded="false"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span class="text-sm">User Management</span>
+      </div>
+      <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+    </button>
+
+    <div id="userManagementMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="students.html">
+        <span class="material-symbols-outlined text-lg">school</span>
+        <span>Students</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="employees.html">
+        <span class="material-symbols-outlined text-lg">badge</span>
+        <span>Employees</span>
+      </a>
+    </div>
+
+    <button
+      class="menu-toggle mt-1 w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      type="button"
+      data-target="inventoryMenu"
+      aria-expanded="false"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-xl">inventory_2</span>
+        <span class="text-sm">Inventory</span>
+      </div>
+      <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+    </button>
+
+    <div id="inventoryMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="itemmasterfile.html">
+        <span class="material-symbols-outlined text-lg">inventory</span>
+        <span>Item Masterfile</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="itemmanagement.html">
+        <span class="material-symbols-outlined text-lg">edit_note</span>
+        <span>Item Management</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="incomingitems.html">
+        <span class="material-symbols-outlined text-lg">south_west</span>
+        <span>Incoming Items</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="outgoingitems.html">
+        <span class="material-symbols-outlined text-lg">north_east</span>
+        <span>Outgoing Items</span>
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="stockreport.html">
+        <span class="material-symbols-outlined text-lg">assessment</span>
+        <span>Stock Report</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="pt-4 pb-2">
+    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Operations</p>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowingrequests.html">
+      <span class="material-symbols-outlined text-xl">handshake</span>
+      <span class="text-sm">Borrowing Requests</span>
+      <span class="ml-auto bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold">12</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="returns.html">
+      <span class="material-symbols-outlined text-xl">assignment_return</span>
+      <span class="text-sm">Returns</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowinghistory.html">
+      <span class="material-symbols-outlined text-xl">history</span>
+      <span class="text-sm">Borrowing History</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-red-500 transition-colors" href="overdueitems.html">
+      <span class="material-symbols-outlined text-xl">error_outline</span>
+      <span class="text-sm font-medium">Overdue Items</span>
+      <span class="ml-auto bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
+    </a>
+  </div>
+
+  <div class="pt-4 pb-2">
+    <p class="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Systems Admin</p>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="reports.html">
+      <span class="material-symbols-outlined text-xl">analytics</span>
+      <span class="text-sm">Reports</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="rolemanagement.html">
+      <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+      <span class="text-sm">Role Management</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="borrowingpolicies.html">
+      <span class="material-symbols-outlined text-xl">policy</span>
+      <span class="text-sm">Borrowing Policies</span>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors" href="auditlogs.html">
+      <span class="material-symbols-outlined text-xl">receipt_long</span>
+      <span class="text-sm">Audit Logs</span>
+    </a>
+
+    <button
+      class="menu-toggle mt-1 w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      type="button"
+      data-target="systemSetupMenu"
+      aria-expanded="false"
+    >
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span class="text-sm">System Setup</span>
+      </div>
+      <span class="material-symbols-outlined text-sm menu-arrow">expand_more</span>
+    </button>
+
+    <div id="systemSetupMenu" class="hidden ml-5 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 pl-4">
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="coursemanagement.html">
+        <span class="material-symbols-outlined text-lg">account_tree</span>
+        <span>Academic Structure</span>
+      </a>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="employeesetup.html">
+        <span class="material-symbols-outlined text-lg">business_center</span>
+        <span>Employee Structure</span>
+      </a>
+
+      <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="systemconfig.html">
+        <span class="material-symbols-outlined text-lg">tune</span>
+        <span>System Configuration</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+        <div class="mt-auto space-y-3 pt-6">
+          <a href="signin.html" class="flex items-center justify-center gap-2 rounded-xl border border-red-900/40 bg-red-900/20 px-4 py-3 text-sm font-semibold text-red-400 hover:bg-red-900/30 transition">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            <span>Sign Out</span>
+          </a>
+          <div class="rounded-2xl border border-primary/20 bg-primary/10 p-4">
+            <p class="text-xs font-semibold text-primary mb-1">Academic Year 25/26</p>
+            <p class="text-[11px] leading-relaxed text-slate-400">Server status: Operational<br>Last backup: 2h ago</p>
+          </div>
+        </div>
+      </aside>
+
+
+      <button
+  id="sidebarToggleDesktop"
+  type="button"
+  class="hidden lg:flex fixed top-[88px] left-[304px] z-50 h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 shadow-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300"
+  title="Toggle Sidebar"
+  aria-label="Toggle Sidebar"
+>
+  <span id="sidebarToggleIcon" class="material-symbols-outlined text-[20px]">left_panel_close</span>
+</button>
+
+      <main class="flex-1 overflow-y-auto p-6 md:p-8">
+        <div class="max-w-[1600px] mx-auto space-y-8">
+          <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-primary font-bold mb-3">Institutional Governance</p>
+              <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">Borrowing Policies</h1>
+              <p class="max-w-3xl text-lg text-slate-400 leading-relaxed">Configure system-wide borrowing rules, category overrides, eligibility controls, and overdue notification settings.</p>
+            </div>
+
+          </div>
+
+          <section class="rounded-3xl border border-line-dark bg-panel-dark/60 p-5 md:p-6 shadow-soft">
+            <div class="flex flex-wrap gap-3">
+              <button class="tab-btn active rounded-2xl border border-line-dark bg-panel-dark px-5 py-3 text-sm font-semibold text-slate-300 transition" data-tab="borrow-rules">Borrow Rules</button>
+              <button class="tab-btn rounded-2xl border border-line-dark bg-panel-dark px-5 py-3 text-sm font-semibold text-slate-400 hover:text-white transition" data-tab="category-overrides">Category Overrides</button>
+              <button class="tab-btn rounded-2xl border border-line-dark bg-panel-dark px-5 py-3 text-sm font-semibold text-slate-400 hover:text-white transition" data-tab="eligibility-controls">Eligibility &amp; Controls</button>
+              <button class="tab-btn rounded-2xl border border-line-dark bg-panel-dark px-5 py-3 text-sm font-semibold text-slate-400 hover:text-white transition" data-tab="notifications-escalation">Notifications &amp; Escalation</button>
+            </div>
+          </section>
+
+          <section id="borrow-rules" class="tab-panel active space-y-6">
+            <div class="rounded-3xl border border-line-dark bg-panel-dark p-6 md:p-8 shadow-soft">
+              <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-2xl font-bold mb-2">Global Circulation Rules</h2>
+                  <p class="max-w-4xl text-sm text-slate-400 leading-relaxed">This section defines the default and user-type-specific borrowing limits, duration, reservation hold period, late fees, and grace period. If no specific rule applies to a user type, the Default rule will be used.</p>
+                </div>
+                <button data-open-modal="borrowRuleModal" class="inline-flex items-center gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/20 transition">
+                  <span class="material-symbols-outlined text-lg">add_circle</span>Add Borrow Rule
+                </button>
+              </div>
+
+              <div class="overflow-x-auto rounded-2xl border border-line-dark">
+                <table class="min-w-full text-sm">
+                  <thead class="bg-panel-dark-2 text-slate-400 uppercase text-[11px] tracking-[0.2em]">
+                    <tr>
+                      <th class="px-6 py-4 text-left">User Type</th>
+                      <th class="px-6 py-4 text-left">Max Items</th>
+                      <th class="px-6 py-4 text-left">Max Duration</th>
+                      <th class="px-6 py-4 text-left">Reservation Hold</th>
+                      <th class="px-6 py-4 text-left">Daily Late Fee</th>
+                      <th class="px-6 py-4 text-left">Grace Period</th>
+                      <th class="px-6 py-4 text-left">Status</th>
+                      <th class="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-line-dark bg-[#0d162b]">
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5">
+                        <div class="flex items-center gap-3">
+                          <div class="h-11 w-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center"><span class="material-symbols-outlined text-primary">tune</span></div>
+                          <div><p class="font-semibold">Default</p><p class="text-xs text-slate-500">Fallback rule</p></div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-5 font-medium">1 Item</td>
+                      <td class="px-6 py-5 font-medium">1 Day</td>
+                      <td class="px-6 py-5 font-medium">3 Hours</td>
+                      <td class="px-6 py-5 font-semibold text-indigo-300">PHP 100</td>
+                      <td class="px-6 py-5 font-medium">1 Day</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">Active</span></td>
+                      <td class="px-6 py-5">
+                        <div class="flex items-center justify-end gap-2">
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark" title="Delete"><span class="material-symbols-outlined text-lg">delete</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-amber-300 hover:bg-panel-dark" title="Deactivate"><span class="material-symbols-outlined text-lg">toggle_off</span></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5">
+                        <div class="flex items-center gap-3">
+                          <div class="h-11 w-11 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-sky-300">school</span></div>
+                          <div><p class="font-semibold">Student</p><p class="text-xs text-slate-500">Undergraduate borrowers</p></div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-5 font-medium">1 Item</td>
+                      <td class="px-6 py-5 font-medium">3 Days</td>
+                      <td class="px-6 py-5 font-medium">3 Hours</td>
+                      <td class="px-6 py-5 font-semibold text-indigo-300">PHP 150</td>
+                      <td class="px-6 py-5 font-medium">1 Day</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">Active</span></td>
+                      <td class="px-6 py-5">
+                        <div class="flex items-center justify-end gap-2">
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark" title="Delete"><span class="material-symbols-outlined text-lg">delete</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-amber-300 hover:bg-panel-dark" title="Deactivate"><span class="material-symbols-outlined text-lg">toggle_off</span></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5">
+                        <div class="flex items-center gap-3">
+                          <div class="h-11 w-11 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-amber-300">co_present</span></div>
+                          <div><p class="font-semibold">Faculty</p><p class="text-xs text-slate-500">Teaching personnel</p></div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-5 font-medium">2 Items</td>
+                      <td class="px-6 py-5 font-medium">90 Days</td>
+                      <td class="px-6 py-5 font-medium">6 Hours</td>
+                      <td class="px-6 py-5 font-semibold text-indigo-300">PHP 300</td>
+                      <td class="px-6 py-5 font-medium">2 Days</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">Active</span></td>
+                      <td class="px-6 py-5">
+                        <div class="flex items-center justify-end gap-2">
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark" title="Delete"><span class="material-symbols-outlined text-lg">delete</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-amber-300 hover:bg-panel-dark" title="Deactivate"><span class="material-symbols-outlined text-lg">toggle_off</span></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5">
+                        <div class="flex items-center gap-3">
+                          <div class="h-11 w-11 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-rose-300">badge</span></div>
+                          <div><p class="font-semibold">Employee</p><p class="text-xs text-slate-500">Non-teaching personnel</p></div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-5 font-medium">2 Items</td>
+                      <td class="px-6 py-5 font-medium">7 Days</td>
+                      <td class="px-6 py-5 font-medium">4 Hours</td>
+                      <td class="px-6 py-5 font-semibold text-indigo-300">PHP 200</td>
+                      <td class="px-6 py-5 font-medium">1 Day</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-slate-500/20 bg-slate-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-300">Inactive</span></td>
+                      <td class="px-6 py-5">
+                        <div class="flex items-center justify-end gap-2">
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="View"><span class="material-symbols-outlined text-lg">visibility</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark" title="Edit"><span class="material-symbols-outlined text-lg">edit</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark" title="Delete"><span class="material-symbols-outlined text-lg">delete</span></button>
+                          <button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-emerald-300 hover:bg-panel-dark" title="Activate"><span class="material-symbols-outlined text-lg">toggle_on</span></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-4 rounded-2xl border border-primary/20 bg-primary/10 p-4 text-sm text-slate-300">
+                <span class="font-semibold text-white">Rule priority:</span> Category Overrides take precedence over Borrow Rules. If no user-type-specific rule exists, the Default rule is applied.
+              </div>
+            </div>
+          </section>
+
+          <section id="category-overrides" class="tab-panel space-y-6">
+            <div class="rounded-3xl border border-line-dark bg-panel-dark p-6 md:p-8 shadow-soft">
+              <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+                <div>
+                  <h2 class="text-2xl font-bold mb-2">Category-Specific Overrides</h2>
+                  <p class="max-w-4xl text-sm text-slate-400 leading-relaxed">This section allows category-specific overrides for special inventory types. These rules override the standard borrow rules when applicable.</p>
+                </div>
+                <button data-open-modal="categoryOverrideModal" class="inline-flex items-center gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/20 transition"><span class="material-symbols-outlined text-lg">add_circle</span>Add Category Override</button>
+              </div>
+
+              <div class="overflow-x-auto rounded-2xl border border-line-dark">
+                <table class="min-w-full text-sm">
+                  <thead class="bg-panel-dark-2 text-slate-400 uppercase text-[11px] tracking-[0.2em]">
+                    <tr>
+                      <th class="px-6 py-4 text-left">Category Name</th>
+                      <th class="px-6 py-4 text-left">Max Duration</th>
+                      <th class="px-6 py-4 text-left">Late Fee Scale</th>
+                      <th class="px-6 py-4 text-left">Restricted To</th>
+                      <th class="px-6 py-4 text-left">Requires Approval</th>
+                      <th class="px-6 py-4 text-left">Status</th>
+                      <th class="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-line-dark bg-[#0d162b]">
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5 font-semibold">Electronic Devices</td>
+                      <td class="px-6 py-5">3 Days</td>
+                      <td class="px-6 py-5 text-indigo-300 font-semibold">PHP 300 / Day</td>
+                      <td class="px-6 py-5">Faculty</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full bg-amber-500/10 px-3 py-1 text-[11px] font-semibold text-amber-300">Yes</span></td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">Active</span></td>
+                      <td class="px-6 py-5"><div class="flex items-center justify-end gap-2"><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">visibility</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">edit</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">delete</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-amber-300 hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">toggle_off</span></button></div></td>
+                    </tr>
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5 font-semibold">Laboratory Equipment</td>
+                      <td class="px-6 py-5">2 Days</td>
+                      <td class="px-6 py-5 text-indigo-300 font-semibold">PHP 500 / Day</td>
+                      <td class="px-6 py-5">Faculty, Staff</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full bg-amber-500/10 px-3 py-1 text-[11px] font-semibold text-amber-300">Yes</span></td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">Active</span></td>
+                      <td class="px-6 py-5"><div class="flex items-center justify-end gap-2"><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">visibility</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">edit</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">delete</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-amber-300 hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">toggle_off</span></button></div></td>
+                    </tr>
+                    <tr class="hover:bg-panel-dark-2/60 transition">
+                      <td class="px-6 py-5 font-semibold">Sports Equipment</td>
+                      <td class="px-6 py-5">1 Day</td>
+                      <td class="px-6 py-5 text-indigo-300 font-semibold">PHP 100 / Day</td>
+                      <td class="px-6 py-5">Students, Employees</td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold text-emerald-300">No</span></td>
+                      <td class="px-6 py-5"><span class="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">Active</span></td>
+                      <td class="px-6 py-5"><div class="flex items-center justify-end gap-2"><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">visibility</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">edit</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-red-400 hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">delete</span></button><button class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-amber-300 hover:bg-panel-dark"><span class="material-symbols-outlined text-lg">toggle_off</span></button></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section id="eligibility-controls" class="tab-panel space-y-6">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div class="rounded-3xl border border-line-dark bg-panel-dark p-6 md:p-8 shadow-soft">
+                <h2 class="text-2xl font-bold mb-2">Eligibility Toggles</h2>
+                <p class="text-sm text-slate-400 mb-6">This section controls whether users are allowed to borrow based on overdue items, unpaid fines, reservation policies, and other operational restrictions.</p>
+                <div class="space-y-4">
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2/70 p-4 flex items-center justify-between gap-4">
+                    <div><p class="font-semibold">Block Overdue Users</p><p class="text-xs text-slate-500 mt-1">Prevent new borrowing if a user has overdue items.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2/70 p-4 flex items-center justify-between gap-4">
+                    <div><p class="font-semibold">Require Unpaid Fine Clearance</p><p class="text-xs text-slate-500 mt-1">Users must settle unpaid fines before requesting new items.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2/70 p-4 flex items-center justify-between gap-4">
+                    <div><p class="font-semibold">Allow Reservation Transfers</p><p class="text-xs text-slate-500 mt-1">Permit staff to reassign a reservation to another eligible user.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2/70 p-4 flex items-center justify-between gap-4">
+                    <div><p class="font-semibold">Allow Multiple Active Requests</p><p class="text-xs text-slate-500 mt-1">Allow users to submit more than one active request at a time.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2/70 p-4 flex items-center justify-between gap-4">
+                    <div><p class="font-semibold">Allow Cross-Department Borrowing</p><p class="text-xs text-slate-500 mt-1">Permit borrowers to request items owned by another department.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-3xl border border-line-dark bg-panel-dark p-6 md:p-8 shadow-soft">
+                <h2 class="text-2xl font-bold mb-2">Borrowing Control Settings</h2>
+                <p class="text-sm text-slate-400 mb-6">Fine-tune request concurrency, reservation auto-cancel behavior, and borrower account restrictions.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label class="block">
+                    <span class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Max Concurrent Borrow Requests</span>
+                    <input type="number" value="2" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100 focus:border-primary focus:ring-primary" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Reservation Auto-Cancel After</span>
+                    <div class="mt-2 flex items-center gap-3">
+                      <input type="number" value="3" class="w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100 focus:border-primary focus:ring-primary" />
+                      <span class="text-sm text-slate-400">Hours</span>
+                    </div>
+                  </label>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4 md:col-span-2">
+                    <div><p class="font-semibold">Auto-Cancel Unclaimed Reservations</p><p class="text-xs text-slate-500 mt-1">Automatically release reserved items once the hold duration expires.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4 md:col-span-2">
+                    <div><p class="font-semibold">Restrict Inactive Accounts from Borrowing</p><p class="text-xs text-slate-500 mt-1">Inactive accounts will not appear in approval and release flows.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4 md:col-span-2">
+                    <div><p class="font-semibold">Require Verified Accounts Only</p><p class="text-xs text-slate-500 mt-1">Only validated users can proceed with requests and reservations.</p></div>
+                    <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="notifications-escalation" class="tab-panel space-y-6">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div class="rounded-3xl border border-line-dark bg-panel-dark p-6 md:p-8 shadow-soft">
+                <h2 class="text-2xl font-bold mb-2">Overdue Notifications &amp; Flagging</h2>
+                <p class="text-sm text-slate-400 mb-6">This section controls when reminders are sent, when users are flagged, and how overdue accounts are escalated.</p>
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_180px] gap-6 items-start">
+                  <div class="space-y-5">
+                    <label class="block">
+                      <span class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Reminder Frequency</span>
+                      <select class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100 focus:border-primary focus:ring-primary">
+                        <option>Daily until returned</option>
+                        <option>Every 3 days</option>
+                        <option>Weekly</option>
+                      </select>
+                    </label>
+                    <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4">
+                      <div><p class="font-semibold">Enable Auto Reminders</p><p class="text-xs text-slate-500 mt-1">Send reminders automatically based on the configured schedule.</p></div>
+                      <label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label>
+                    </div>
+                    <label class="block">
+                      <span class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Auto-flag as Problem User After</span>
+                      <div class="mt-2 flex items-center gap-3">
+                        <input type="number" value="30" class="w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100 focus:border-primary focus:ring-primary" />
+                        <span class="text-sm text-slate-400">Days</span>
+                      </div>
+                    </label>
+                    <label class="block">
+                      <span class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Escalate After</span>
+                      <div class="mt-2 flex items-center gap-3">
+                        <input type="number" value="7" class="w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100 focus:border-primary focus:ring-primary" />
+                        <span class="text-sm text-slate-400">Overdue Days</span>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="rounded-3xl border border-primary/20 bg-primary/10 p-6 text-center">
+                    <p class="text-5xl font-extrabold text-primary">24h</p>
+                    <p class="mt-3 text-xs uppercase tracking-[0.2em] text-slate-400">First reminder sent before due date</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-3xl border border-line-dark bg-panel-dark p-6 md:p-8 shadow-soft">
+                <h2 class="text-2xl font-bold mb-6">Escalation Rules</h2>
+                <div class="space-y-4 mb-6">
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4"><div><p class="font-semibold">Notify Admin</p><p class="text-xs text-slate-500 mt-1">Send escalation summary to system administrators.</p></div><label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label></div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4"><div><p class="font-semibold">Notify Department Head</p><p class="text-xs text-slate-500 mt-1">Alert the borrower’s department head for prolonged overdue cases.</p></div><label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label></div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4"><div><p class="font-semibold">Notify Inventory Staff</p><p class="text-xs text-slate-500 mt-1">Inform inventory custodians when escalations are triggered.</p></div><label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label></div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4"><div><p class="font-semibold">Send Email Notification</p><p class="text-xs text-slate-500 mt-1">Deliver automated notices to affected users and staff.</p></div><label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label></div>
+                  <div class="rounded-2xl border border-line-dark bg-panel-dark-2 p-4 flex items-center justify-between gap-4"><div><p class="font-semibold">Create Audit Log Entry Automatically</p><p class="text-xs text-slate-500 mt-1">Record reminder and escalation actions in Audit Logs.</p></div><label class="inline-flex items-center cursor-pointer shrink-0"><input type="checkbox" checked class="switch-input sr-only"><span class="switch-track h-8 w-14 rounded-full bg-slate-600 transition relative"><span class="switch-thumb absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition"></span></span></label></div>
+                </div>
+                <div class="rounded-3xl border border-primary/20 bg-primary/10 p-5">
+                  <h3 class="text-lg font-bold mb-3">Policy Summary</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-300">
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Default circulation rule applies when no specific user type rule exists.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Category overrides take precedence over standard borrow rules.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Students can borrow up to 1 item for 3 days.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Faculty can borrow up to 2 items for 90 days.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Overdue users are blocked from borrowing.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Unpaid fines must be cleared before new borrowing.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>First reminder is sent 24 hours before due date.</span></div>
+                    <div class="flex gap-3"><span class="mt-1 h-2 w-2 rounded-full bg-primary"></span><span>Borrowers are flagged as problem users after 30 overdue days.</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="borrowRuleModal" class="modal hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-2xl rounded-3xl border border-line-dark bg-panel-dark shadow-soft">
+        <div class="flex items-center justify-between border-b border-line-dark px-6 py-5">
+          <div>
+            <h3 class="text-xl font-bold">Add / Edit Borrow Rule</h3>
+            <p class="text-sm text-slate-400 mt-1">Configure user-type-specific circulation settings.</p>
+          </div>
+          <button data-close-modal="borrowRuleModal" class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark-2"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="block"><span class="text-sm font-medium text-slate-300">User Type</span><select class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"><option>Default</option><option>Student</option><option>Faculty</option><option>Employee</option></select></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Max Items</span><input type="number" value="1" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Max Duration (Days)</span><input type="number" value="3" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Reservation Hold (Hours)</span><input type="number" value="3" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Daily Late Fee (PHP)</span><input type="number" value="100" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Grace Period (Days)</span><input type="number" value="1" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block md:col-span-2"><span class="text-sm font-medium text-slate-300">Status</span><select class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"><option>Active</option><option>Inactive</option></select></label>
+        </div>
+        <div class="flex justify-end gap-3 border-t border-line-dark px-6 py-5">
+          <button data-close-modal="borrowRuleModal" class="rounded-2xl border border-line-dark px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-panel-dark-2">Cancel</button>
+          <button class="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500">Save Rule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="categoryOverrideModal" class="modal hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-2xl rounded-3xl border border-line-dark bg-panel-dark shadow-soft">
+        <div class="flex items-center justify-between border-b border-line-dark px-6 py-5">
+          <div>
+            <h3 class="text-xl font-bold">Add / Edit Category Override</h3>
+            <p class="text-sm text-slate-400 mt-1">Define special rules for a specific inventory category.</p>
+          </div>
+          <button data-close-modal="categoryOverrideModal" class="rounded-xl border border-line-dark p-2 text-slate-400 hover:text-white hover:bg-panel-dark-2"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="block"><span class="text-sm font-medium text-slate-300">Category Name</span><input type="text" value="Electronic Devices" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Max Duration</span><input type="text" value="3 Days" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Late Fee Scale</span><input type="text" value="PHP 300 / Day" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Restricted To</span><input type="text" value="Faculty" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Requires Approval</span><select class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"><option>Yes</option><option>No</option></select></label>
+          <label class="block"><span class="text-sm font-medium text-slate-300">Status</span><select class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100"><option>Active</option><option>Inactive</option></select></label>
+          <label class="block md:col-span-2"><span class="text-sm font-medium text-slate-300">Notes</span><textarea rows="4" class="mt-2 w-full rounded-2xl border border-line-dark bg-panel-dark-2 px-4 py-3 text-slate-100">Reserved for faculty-issued institutional devices.</textarea></label>
+        </div>
+        <div class="flex justify-end gap-3 border-t border-line-dark px-6 py-5">
+          <button data-close-modal="categoryOverrideModal" class="rounded-2xl border border-line-dark px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-panel-dark-2">Cancel</button>
+          <button class="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500">Save Override</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+  const sidebar = document.getElementById("appSidebar");
+  const sidebarToggleDesktop = document.getElementById("sidebarToggleDesktop");
+  const sidebarToggleIcon = document.getElementById("sidebarToggleIcon");
+
+  if (sidebar && sidebarToggleDesktop && sidebarToggleIcon) {
+    let sidebarHidden = false;
+
+    function updateSidebarState() {
+      if (sidebarHidden) {
+        sidebar.classList.add("!hidden");
+        sidebarToggleDesktop.style.left = "16px";
+        sidebarToggleIcon.textContent = "left_panel_open";
+        sidebarToggleDesktop.title = "Show Sidebar";
+        sidebarToggleDesktop.setAttribute("aria-label", "Show Sidebar");
+      } else {
+        sidebar.classList.remove("!hidden");
+        sidebarToggleDesktop.style.left = "304px";
+        sidebarToggleIcon.textContent = "left_panel_close";
+        sidebarToggleDesktop.title = "Hide Sidebar";
+        sidebarToggleDesktop.setAttribute("aria-label", "Hide Sidebar");
+      }
+    }
+
+    sidebarToggleDesktop.addEventListener("click", () => {
+      sidebarHidden = !sidebarHidden;
+      updateSidebarState();
+    });
+
+    updateSidebarState();
+  }
+
+
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('borrowbox-theme');
+    if (savedTheme === 'light') {
+      root.classList.remove('dark');
+    } else {
+      root.classList.add('dark');
+    }
+
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    function syncThemeIcon() {
+      themeIcon.textContent = root.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+    }
+    syncThemeIcon();
+    themeToggle.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('borrowbox-theme', root.classList.contains('dark') ? 'dark' : 'light');
+      syncThemeIcon();
+    });
+
+    document.querySelectorAll('.menu-toggle').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.dataset.target);
+        const arrow = button.querySelector('.menu-arrow');
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        target.classList.toggle('hidden');
+        button.setAttribute('aria-expanded', (!expanded).toString());
+        arrow.textContent = expanded ? 'expand_more' : 'expand_less';
+      });
+    });
+
+    document.querySelectorAll('.tab-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('[data-open-modal]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.getElementById(btn.dataset.openModal).classList.remove('hidden');
+      });
+    });
+    document.querySelectorAll('[data-close-modal]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.getElementById(btn.dataset.closeModal).classList.add('hidden');
+      });
+    });
+    document.querySelectorAll('.modal').forEach((modal) => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target === modal.firstElementChild) {
+          modal.classList.add('hidden');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
